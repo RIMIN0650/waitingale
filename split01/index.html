@@ -6,62 +6,365 @@
     <title>MediQ - 메인</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="text-slate-900">
+
     <nav class="sticky top-0 z-50 glass-nav">
         <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
             <a href="index.html" class="flex items-center gap-2.5">
-                <div class="bg-slate-900 text-white w-9 h-9 flex items-center justify-center rounded-xl">
+                <div class="bg-slate-900 text-white w-9 h-9 flex items-center justify-center rounded-xl shadow-lg shadow-slate-200">
                     <i class="fa-solid fa-square-h text-xl"></i>
                 </div>
                 <span class="text-xl font-bold tracking-tight text-slate-900">MediQ</span>
             </a>
+            
+            <div class="hidden md:flex gap-10 text-[14px] font-medium text-slate-500">
+                <a href="index.html" class="hover:text-slate-900 transition font-bold text-slate-900">내 주변 병원</a>
+                <a href="#" class="hover:text-slate-900 transition text-slate-300 pointer-events-none">실시간 대기열</a>
+                <a href="#" class="hover:text-slate-900 transition text-slate-300 pointer-events-none">커뮤니티</a>
+                <a href="#" class="text-indigo-600 font-bold flex items-center gap-1.5 bg-indigo-50 px-3 py-1 rounded-full">
+                    <i class="fa-solid fa-heart-pulse text-xs"></i> 건강 예보
+                </a>
+            </div>
+
             <div class="flex items-center gap-4">
-                <a href="login.html" class="bg-indigo-600 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 transition">로그인</a>
-                <a href="mypage.html" class="text-slate-500 hover:text-slate-900"><i class="fa-solid fa-user text-lg"></i></a>
+                <a href="login.html" class="bg-indigo-600 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">
+                    로그인
+                </a>
+                <a href="mypage.html" class="text-slate-400 hover:text-slate-600 transition">
+                    <i class="fa-solid fa-user text-lg"></i>
+                </a>
             </div>
         </div>
     </nav>
 
     <main class="max-w-7xl mx-auto px-6 py-10">
+        
         <section class="mb-10">
-            <div class="bg-white rounded-[32px] p-3 flex flex-col lg:flex-row gap-2 border border-slate-200 shadow-xl shadow-slate-100">
-                <div class="flex-1 flex items-center px-4 py-2">
-                    <i class="fa-solid fa-location-dot text-indigo-500 mr-4 text-xl"></i>
-                    <input type="text" value="서울 서대문구 신촌동" class="bg-transparent w-full outline-none font-bold">
+            <div class="bg-white rounded-[32px] p-3 flex flex-col lg:flex-row gap-2 border border-slate-200 shadow-xl shadow-slate-100 relative z-20">
+                
+                <div class="flex-1 flex items-center px-4 py-2 hover:bg-slate-50 rounded-2xl transition cursor-pointer group">
+                    <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center mr-4 group-hover:bg-indigo-100 transition">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <div class="flex flex-col w-full border-r border-transparent lg:border-slate-100 lg:pr-4">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">위치</span>
+                        <input type="text" value="서울 서대문구 신촌동" class="bg-transparent w-full outline-none text-slate-900 font-bold text-sm md:text-base placeholder:text-slate-400 truncate">
+                    </div>
                 </div>
-                <button class="bg-slate-900 text-white font-bold px-8 py-4 rounded-[24px]">검색</button>
+
+                <div class="flex-1 flex items-center px-4 py-2 hover:bg-slate-50 rounded-2xl transition cursor-pointer group">
+                    <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-500 flex items-center justify-center mr-4 group-hover:bg-emerald-100 transition">
+                        <i class="fa-solid fa-stethoscope"></i>
+                    </div>
+                    <div class="flex flex-col w-full border-r border-transparent lg:border-slate-100 lg:pr-4">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">진료 과목</span>
+                        <select class="bg-transparent w-full outline-none text-slate-900 font-bold text-sm md:text-base cursor-pointer">
+                            <option>전체 진료과</option>
+                            <option>내과</option>
+                            <option>소아청소년과</option>
+                            <option>이비인후과</option>
+                            <option>정형외과</option>
+                            <option>피부과</option>
+                            <option>응급의학과</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex-1 flex items-center px-4 py-2 hover:bg-slate-50 rounded-2xl transition cursor-pointer group">
+                    <div class="w-10 h-10 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mr-4 group-hover:bg-rose-100 transition">
+                        <i class="fa-solid fa-head-side-virus"></i>
+                    </div>
+                    <div class="flex flex-col w-full">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">증상</span>
+                        <input type="text" placeholder="예: 고열, 복통" class="bg-transparent w-full outline-none text-slate-900 font-bold text-sm md:text-base placeholder:text-slate-300">
+                    </div>
+                </div>
+
+                <button class="bg-slate-900 text-white font-bold w-full lg:w-auto px-8 py-4 rounded-[24px] hover:bg-indigo-600 transition shadow-lg shadow-slate-200 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span class="lg:hidden">검색하기</span>
+                </button>
             </div>
         </section>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+            
             <div class="lg:col-span-8">
-                <div class="relative group">
-                    <div id="map" class="w-full h-[500px] rounded-[32px] shadow-sm border border-slate-200 z-10"></div>
-                    <button onclick="panToMyLocation()" class="absolute top-4 right-4 z-20 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:text-indigo-600">
-                        <i class="fa-solid fa-location-crosshairs"></i>
+                
+                <div class="mb-12 relative group">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+                            <i class="fa-solid fa-map-location-dot text-indigo-500"></i> 내 주변 실시간 현황
+                        </h2>
+                        <span class="text-xs font-bold text-slate-400 flex items-center gap-1">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> 원활
+                            <span class="w-2 h-2 rounded-full bg-amber-400 ml-2"></span> 보통
+                            <span class="w-2 h-2 rounded-full bg-rose-500 ml-2"></span> 혼잡
+                        </span>
+                    </div>
+                    
+                    <div id="map" class="w-full h-[500px] rounded-[32px] shadow-sm border border-slate-200 overflow-hidden relative"></div>
+                    
+                    <button onclick="panToMyLocation()" class="absolute top-16 right-4 z-[400] w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all border border-slate-100 group/btn" title="내 위치로 이동">
+                        <i class="fa-solid fa-location-crosshairs text-lg group-hover/btn:animate-spin"></i>
                     </button>
+
+                    <div id="hospital-info-card" class="hidden absolute bottom-6 right-6 w-full max-w-sm bg-white/95 backdrop-blur-md p-6 rounded-[24px] border border-white/50 shadow-2xl z-[400] transition-all duration-300">
+                        <button onclick="closeHospitalCard()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition">
+                            <i class="fa-solid fa-xmark text-lg"></i>
+                        </button>
+
+                        <div id="card-content" class="fade-in">
+                            <div class="flex justify-between items-start mb-4 pr-6">
+                                <div>
+                                    <p class="text-[10px] text-indigo-500 font-bold uppercase mb-1 tracking-widest" id="card-status-text">추천 병원</p>
+                                    <h4 class="text-xl font-bold text-slate-900 leading-tight" id="card-name">세브란스 병원</h4>
+                                    <p class="text-xs text-slate-500 mt-1" id="card-distance">내 위치로부터 350m</p>
+                                </div>
+                                <div class="bg-slate-100 p-2 rounded-xl text-center min-w-[60px]">
+                                    <p class="text-[10px] text-slate-400 font-bold">대기시간</p>
+                                    <p class="text-lg font-bold text-slate-900" id="card-wait-time">12<span class="text-xs font-normal">분</span></p>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-3 mb-4">
+                                <div class="bg-slate-50 px-3 py-2 rounded-xl flex items-center gap-3">
+                                    <i class="fa-solid fa-users text-slate-400"></i>
+                                    <div>
+                                        <p class="text-[10px] text-slate-400">대기 인원</p>
+                                        <p class="text-sm font-bold text-slate-700" id="card-wait-count">5명</p>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 px-3 py-2 rounded-xl flex items-center gap-3">
+                                    <i class="fa-solid fa-bed-pulse text-slate-400"></i>
+                                    <div>
+                                        <p class="text-[10px] text-slate-400">가용 병상</p>
+                                        <p class="text-sm font-bold text-slate-700" id="card-beds">45석</p>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 px-3 py-2 rounded-xl flex items-center gap-3">
+                                    <i class="fa-solid fa-square-parking text-slate-400"></i>
+                                    <div>
+                                        <p class="text-[10px] text-slate-400">주차 현황</p>
+                                        <p class="text-sm font-bold text-slate-700" id="card-parking">여유</p>
+                                    </div>
+                                </div>
+                                <div class="bg-slate-50 px-3 py-2 rounded-xl flex items-center gap-3">
+                                    <i class="fa-solid fa-user-doctor text-slate-400"></i>
+                                    <div>
+                                        <p class="text-[10px] text-slate-400">전문의</p>
+                                        <p class="text-sm font-bold text-slate-700" id="card-specialist">상주함</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold hover:bg-indigo-600 transition flex items-center justify-center gap-2 shadow-lg shadow-slate-200">
+                                <span>예약 / 접수하기</span>
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dashboard-queue-section" class="mb-12">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-slate-900 tracking-tight">나의 예약 리포트</h2>
+                        <a href="mypage.html" class="text-sm text-slate-400 hover:text-indigo-600 transition font-medium">전체 내역보기 <i class="fa-solid fa-chevron-right text-[10px]"></i></a>
+                    </div>
+
+                    <div id="queue-guest" class="bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl p-10 text-center">
+                        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm text-slate-300">
+                            <i class="fa-solid fa-lock text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-600 mb-2">로그인 후 예약 정보를 확인하세요</h3>
+                        <p class="text-sm text-slate-400 mb-6">실시간 대기 순번 및 예상 시간을 확인할 수 있습니다.</p>
+                        <a href="login.html" class="inline-block bg-white text-slate-900 px-6 py-2.5 rounded-xl text-sm font-bold shadow-sm border border-slate-200 hover:bg-slate-100 transition">로그인하기</a>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-slate-900 tracking-tight text-balance">주변 병원 목록</h2>
+                        <div class="flex bg-slate-100 p-1 rounded-xl">
+                            <button class="px-4 py-1.5 bg-white rounded-lg text-xs font-bold shadow-sm">거리순</button>
+                            <button class="px-4 py-1.5 text-xs font-bold text-slate-400">대기 짧은순</button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white p-6 rounded-[24px] border border-slate-100 card-hover cursor-pointer group">
+                            <div class="flex justify-between items-start mb-6">
+                                <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
+                                    <i class="fa-solid fa-hospital text-slate-400 group-hover:text-indigo-500"></i>
+                                </div>
+                                <span class="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-full">진료 원활</span>
+                            </div>
+                            <h3 class="text-lg font-bold mb-1">세브란스 병원</h3>
+                            <p class="text-sm text-slate-400 mb-6 flex items-center gap-1">
+                                <i class="fa-solid fa-location-dot text-xs"></i> 신촌동 · 0.3km
+                            </p>
+                            <div class="flex justify-between items-center pt-4 border-t border-slate-50">
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase">평균 대기</span>
+                                    <span class="font-bold text-slate-700">12분</span>
+                                </div>
+                                <i class="fa-solid fa-arrow-right text-slate-200 group-hover:text-indigo-500 transition-colors"></i>
+                            </div>
+                        </div>
+                        <div class="bg-white p-6 rounded-[24px] border border-slate-100 card-hover cursor-pointer group">
+                            <div class="flex justify-between items-start mb-6">
+                                <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
+                                    <i class="fa-solid fa-stethoscope text-slate-400 group-hover:text-indigo-500"></i>
+                                </div>
+                                <span class="px-3 py-1 bg-amber-50 text-amber-600 text-[10px] font-bold rounded-full">대기 보통</span>
+                            </div>
+                            <h3 class="text-lg font-bold mb-1">아이사랑 소아과</h3>
+                            <p class="text-sm text-slate-400 mb-6 flex items-center gap-1">
+                                <i class="fa-solid fa-location-dot text-xs"></i> 연희동 · 0.8km
+                            </p>
+                            <div class="flex justify-between items-center pt-4 border-t border-slate-50">
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] text-slate-400 font-bold uppercase">평균 대기</span>
+                                    <span class="font-bold text-slate-700">45분</span>
+                                </div>
+                                <i class="fa-solid fa-arrow-right text-slate-200 group-hover:text-indigo-500 transition-colors"></i>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            
+
             <div class="lg:col-span-4">
-                <div class="bg-slate-900 rounded-[32px] p-8 text-white shadow-2xl">
-                    <h2 class="text-lg font-bold mb-6"><i class="fa-solid fa-cloud-sun-rain text-indigo-400 mr-2"></i>실시간 건강 예보</h2>
-                    <div class="space-y-5">
-                        <div class="flex justify-between text-xs font-medium">
-                            <span class="text-slate-300">독감 주의보</span>
-                            <span class="text-rose-400 font-bold">발령 중</span>
+                
+                <div id="panel-health-forecast" class="bg-slate-900 rounded-[32px] p-8 text-white sticky top-24 shadow-2xl shadow-slate-300 transition-all duration-300">
+                    <div class="flex items-center justify-between mb-10 text-balance">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-cloud-sun-rain text-indigo-400 animate-pulse"></i>
+                            <h2 class="text-lg font-bold tracking-tight">실시간 건강 예보</h2>
                         </div>
-                        <div class="h-1 w-full bg-slate-800 rounded-full"><div class="h-full bg-rose-500" style="width: 80%"></div></div>
+                        <span class="text-[10px] font-bold text-indigo-300/60 uppercase tracking-widest">Live Updates</span>
                     </div>
+                    <div class="space-y-8">
+                        <div>
+                            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-4">오늘의 주요 건강 이슈</p>
+                            <div class="space-y-5">
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex justify-between text-xs font-medium">
+                                        <span class="text-slate-300"><i class="fa-solid fa-virus mr-2"></i>독감(인플루엔자)</span>
+                                        <span class="text-rose-400 font-bold">주의보 발령</span>
+                                    </div>
+                                    <div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden">
+                                        <div class="h-full bg-rose-500" style="width: 80%"></div>
+                                    </div>
+                                    <p class="text-[10px] text-slate-400 mt-1">서대문구 내 확진자 증가 추세</p>
+                                </div>
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex justify-between text-xs font-medium">
+                                        <span class="text-slate-300"><i class="fa-solid fa-smog mr-2"></i>미세먼지</span>
+                                        <span class="text-emerald-400 font-bold">좋음</span>
+                                    </div>
+                                    <div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden">
+                                        <div class="h-full bg-emerald-500" style="width: 20%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white/5 rounded-2xl p-5 border border-white/5">
+                            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-4">주변 병원 혼잡도 요약</p>
+                            <div class="grid grid-cols-2 gap-3 mb-2">
+                                <div class="bg-slate-800 p-3 rounded-xl text-center">
+                                    <p class="text-xs text-slate-400 mb-1">소아과</p>
+                                    <p class="text-emerald-400 font-bold">원활</p>
+                                </div>
+                                <div class="bg-slate-800 p-3 rounded-xl text-center">
+                                    <p class="text-xs text-slate-400 mb-1">내과</p>
+                                    <p class="text-amber-400 font-bold">다소 대기</p>
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-slate-500 text-center">현재 시각 기준 (실시간 업데이트)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="panel-hospital-review" class="hidden bg-slate-900 rounded-[32px] p-8 text-white sticky top-24 shadow-2xl shadow-slate-300 transition-all duration-300 border border-slate-700">
+                    <button onclick="closeReviewPanel()" class="flex items-center gap-2 text-xs font-bold text-indigo-400 hover:text-indigo-300 mb-6 transition">
+                        <i class="fa-solid fa-arrow-left"></i> 건강 예보로 돌아가기
+                    </button>
+
+                    <div class="mb-8">
+                        <div class="flex items-start justify-between mb-2">
+                            <h2 class="text-2xl font-bold" id="review-hospital-name">세브란스 병원</h2>
+                            <span class="bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded">추천</span>
+                        </div>
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="flex text-amber-400 text-sm">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star-half-stroke"></i>
+                            </div>
+                            <span class="text-sm font-bold">4.5</span>
+                            <span class="text-xs text-slate-400">(리뷰 1,240개)</span>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            "대기 시간은 조금 있었지만, 의료진분들이 정말 친절하고 설명도 꼼꼼하게 해주셨어요. 시설도 쾌적합니다."
+                        </p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest">최신 방문자 리뷰</p>
+                        
+                        <div class="bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/5">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-[10px] font-bold">K</div>
+                                    <span class="text-xs font-bold">김*민 님</span>
+                                </div>
+                                <span class="text-[10px] text-slate-400">2시간 전</span>
+                            </div>
+                            <p class="text-xs text-slate-300">"주차장이 넓어서 좋았고, 생각보다 빨리 진료받았습니다."</p>
+                        </div>
+
+                        <div class="bg-white/10 p-4 rounded-2xl backdrop-blur-sm border border-white/5">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-[10px] font-bold">L</div>
+                                    <span class="text-xs font-bold">이*수 님</span>
+                                </div>
+                                <span class="text-[10px] text-slate-400">어제</span>
+                            </div>
+                            <p class="text-xs text-slate-300">"간호사 선생님들이 너무 친절하세요. 아이가 안 울고 진료 잘 받았습니다."</p>
+                        </div>
+                    </div>
+                    
+                    <button class="w-full mt-6 bg-white text-slate-900 font-bold py-3 rounded-xl hover:bg-slate-200 transition">
+                        전체 리뷰 보기
+                    </button>
                 </div>
             </div>
         </div>
     </main>
 
+    <div id="mobile-nav" class="md:hidden fixed bottom-6 left-6 right-6 z-50">
+        <div class="bg-slate-900/90 backdrop-blur-xl rounded-2xl p-4 shadow-2xl flex justify-around items-center border border-white/10">
+            <a href="index.html" class="text-indigo-400"><i class="fa-solid fa-house"></i></a>
+            <button class="text-slate-500"><i class="fa-solid fa-magnifying-glass"></i></button>
+            <div class="bg-indigo-500 w-12 h-12 rounded-full flex items-center justify-center -mt-10 shadow-lg shadow-indigo-500/40 border-4 border-slate-900 text-white">
+                <i class="fa-solid fa-plus text-xl"></i>
+            </div>
+            <button class="text-slate-500 text-slate-300 pointer-events-none"><i class="fa-solid fa-calendar"></i></button>
+            <a href="mypage.html" class="text-slate-500"><i class="fa-solid fa-user"></i></a>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+
 </body>
 </html>
