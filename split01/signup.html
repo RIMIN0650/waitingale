@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediQ - 회원가입</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-slate-50 flex items-center justify-center min-h-screen py-10">
+    <div class="w-full max-w-md bg-white p-10 rounded-[40px] shadow-2xl shadow-slate-200">
+        <div class="flex items-center gap-3 mb-8">
+            <a href="login.html" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-arrow-left"></i></a>
+            <h1 class="text-2xl font-bold">회원가입</h1>
+        </div>
+        
+        <form action="login.html" class="space-y-5 mb-10">
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">이름</label>
+                <input type="text" placeholder="성함 입력" class="bg-slate-50 w-full rounded-2xl px-4 py-3 border border-slate-100 outline-none text-sm">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">이메일</label>
+                <input type="email" placeholder="example@mail.com" class="bg-slate-50 w-full rounded-2xl px-4 py-3 border border-slate-100 outline-none text-sm">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-2 ml-1">비밀번호</label>
+                <input type="password" placeholder="8자 이상" class="bg-slate-50 w-full rounded-2xl px-4 py-3 border border-slate-100 outline-none text-sm">
+            </div>
+            <button type="submit" class="w-full py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition shadow-lg">계정 만들기</button>
+        </form>
+    </div>
+</body>
+</html>
