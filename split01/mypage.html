@@ -93,11 +93,12 @@
                             </div>
                             <span class="text-sm font-bold text-slate-600">검사 결과</span>
                         </button>
-                        <button class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:border-rose-200 hover:shadow-md transition flex flex-col items-center gap-3 group">
+                        <button  id="btn-medical-history"
+                            class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:border-rose-200 hover:shadow-md transition flex flex-col items-center gap-3 group">
                             <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                                 <i class="fa-solid fa-heart-pulse text-xl"></i>
                             </div>
-                            <span class="text-sm font-bold text-slate-600">건강 기록</span>
+                            <span class="text-sm font-bold text-slate-600">진료 기록</span>
                         </button>
                     </div>
                 </div>
@@ -120,6 +121,98 @@
         </div>
     </main>
 
-    
+    <!-- 진료 기록 모달 -->
+    <div id="medical-history-modal" class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4">
+        <div class="bg-white w-full max-w-2xl rounded-[32px] p-8 shadow-2xl relative">
+
+            <button onclick="closeMedicalHistory()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i class="fa-solid fa-heart-pulse text-rose-500"></i>
+                나의 진료 기록
+            </h2>
+
+            <div id="medical-history-list" class="space-y-4">
+                <!-- JS로 렌더링 -->
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script>
+    /* 예시 진료 기록 데이터 */
+    const medicalHistoryData = [
+        {
+            hospital: "서울대학교병원",
+            department: "내과",
+            date: "2023-10-27",
+            doctor: "김철수 교수",
+            diagnosis: "급성 위염",
+            prescription: "위장약 5일분"
+        },
+        {
+            hospital: "아이사랑 소아과",
+            department: "소아청소년과",
+            date: "2023-07-13",
+            doctor: "이영희 원장",
+            diagnosis: "감기",
+            prescription: "해열제, 시럽"
+        },
+        {
+            hospital: "세브란스 병원",
+            department: "정형외과",
+            date: "2023-03-02",
+            doctor: "박민준 전문의",
+            diagnosis: "발목 염좌",
+            prescription: "물리치료 3회"
+        }
+    ];
+
+    /* 진료 기록 열기 */
+    document.getElementById("btn-medical-history").addEventListener("click", () => {
+        renderMedicalHistory();
+        document.getElementById("medical-history-modal").classList.remove("hidden");
+    });
+
+    /* 진료 기록 닫기 */
+    function closeMedicalHistory() {
+        document.getElementById("medical-history-modal").classList.add("hidden");
+    }
+
+    /* 진료 기록 렌더링 */
+    function renderMedicalHistory() {
+        const list = document.getElementById("medical-history-list");
+        list.innerHTML = "";
+
+        medicalHistoryData.forEach(record => {
+            const card = document.createElement("div");
+            card.className = "bg-slate-50 border border-slate-200 rounded-2xl p-5";
+
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-2">
+                    <div>
+                        <h3 class="font-bold text-slate-900">${record.hospital}</h3>
+                        <p class="text-sm text-slate-500">${record.department}</p>
+                    </div>
+                    <span class="text-xs font-bold text-slate-400">${record.date}</span>
+                </div>
+
+                <div class="text-sm text-slate-600 space-y-1 mt-3">
+                    <p><i class="fa-solid fa-user-doctor mr-2 text-slate-400"></i>${record.doctor}</p>
+                    <p><i class="fa-solid fa-notes-medical mr-2 text-slate-400"></i>진단: ${record.diagnosis}</p>
+                    <p><i class="fa-solid fa-pills mr-2 text-slate-400"></i>처방: ${record.prescription}</p>
+                </div>
+            `;
+
+            list.appendChild(card);
+        });
+    }
+    </script>
+
+
 </body>
 </html>
