@@ -1,0 +1,142 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediQ - 스마트 병원 대기 및 관제 시스템</title>... (1KB 남음)
+확장
+message.txt
+51KB
+한별 — 오전 9:36
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediQ - 내 주변 병원 찾기</title>
+확장
+message.txt
+32KB
+한별 — 오후 12:36
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediQ - 아이디 찾기</title>
+확장
+id_find.html
+3KB
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediQ - 비밀번호 찾기</title>
+확장
+pw_find.html
+3KB
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediQ - 모바일 문진표</title>
+확장
+문진표.html
+5KB
+목우목우
+
+ — 오후 2:05
+* {
+    box-sizing: border-box;
+    font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+}
+
+.footer {
+
+* {
+    box-sizing: border-box;
+    font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+}
+
+.footer {
+    background: #fff;
+    color: #666;
+    border-top: 1px solid #eee;
+}
+
+.footer-top {
+    padding: 40px 80px;
+}
+
+.footer-nav {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.footer-nav a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer-content {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 1fr 1fr;
+    gap: 40px;
+}
+
+.footer-col h4 {
+    font-size: 15px;
+    margin-bottom: 12px;
+    color: #222;
+}
+
+.footer-col p,
+.footer-col li {
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.tel {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 6px 0;
+}
+
+.chat-btn {
+    margin-top: 10px;
+    padding: 8px 14px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.icon-list {
+    list-style: none;
+    padding: 0;
+}
+
+.icon-list li {
+    margin-bottom: 8px;
+}
+
+.footer-bottom {
+    border-top: 1px solid #f0f0f0;
+    padding: 25px 80px;
+    font-size: 12px;
+    color: #888;
+}
+
+.cert {
+    margin: 15px 0;
+}
+
+.notice {
+    max-width: 900px;
+    line-height: 1.6;
+}
