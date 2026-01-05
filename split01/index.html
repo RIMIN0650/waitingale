@@ -45,11 +45,9 @@
         </a>
         
         <div class="hidden md:flex gap-10 text-[14px] font-medium text-slate-500">
-            <a href="#" class="font-bold text-slate-900">내 주변 병원</a>
-            <a href="#" class="hover:text-slate-900 transition">실시간 대기열</a>
-            <a href="#" class="text-indigo-600 font-bold flex items-center gap-1.5 bg-indigo-50 px-3 py-1 rounded-full">
-                <i class="fa-solid fa-heart-pulse text-xs"></i> 건강 예보
-            </a>
+            <a href="#nearby-list" class="font-bold text-slate-900">내 주변 병원</a>
+            <a href="#nearby-list2" class="font-bold text-slate-900">나의 예약</a>
+            <a href="#nearby-list3" class="font-bold text-slate-900">내 주변 약국</a>
         </div>
 
         <div class="flex items-center gap-4">
@@ -102,7 +100,7 @@
             </div>
         </section>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <div id="nearby-list" class="grid grid-cols-1 lg:grid-cols-12 gap-10 scroll-mt-28">
             <div class="lg:col-span-8">
                 <div class="mb-12 relative group">
                     <div class="flex items-center justify-between mb-4">
@@ -186,7 +184,7 @@
                 </div>
 
                 
-                <h2 class="text-xl font-bold text-slate-900 mb-6 flex items-center justify-between">
+                <h2 id="nearby-list2" class="text-xl font-bold text-slate-900 mb-6 flex items-center justify-between scroll-mt-28">
                     <span>나의 예약 리포트</span>
 
                     
@@ -266,54 +264,99 @@
 
 
                 <div>
-                    <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xl font-bold text-slate-900 tracking-tight text-balance">주변 병원 목록</h2>
-                        <div class="flex bg-slate-100 p-1 rounded-xl">
-                            <button class="px-4 py-1.5 bg-white rounded-lg text-xs font-bold shadow-sm transition">거리순</button>
-                            <button class="px-4 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-600 transition">대기 짧은순</button>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex items-center justify-between mt-10 mb-6">
+    <h2 id="nearby-list3" class="text-xl font-bold text-slate-900 tracking-tight text-balance flex items-center gap-2 scroll-mt-28">
+        <i class="fa-solid fa-pills text-indigo-500"></i> 주변 약국 목록
+    </h2>
+    <div class="flex bg-slate-100 p-1 rounded-xl">
+        <button class="px-4 py-1.5 bg-white rounded-lg text-xs font-bold shadow-sm transition">거리순</button>
+        <button class="px-4 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-600 transition">영업중</button>
+    </div>
+</div>
+<div class="flex flex-col gap-3">
                         
-                        <a href="Hospital_page.html" class="block bg-white p-6 rounded-[24px] border border-slate-100 card-hover cursor-pointer group">
-                            <div class="flex justify-between items-start mb-6">
-                                <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
-                                    <i class="fa-solid fa-hospital text-slate-400 group-hover:text-indigo-500"></i>
+                        <!-- 약국 리스트 아이템 1 -->
+                        <div class="bg-white p-5 rounded-[24px] border border-slate-100 card-hover cursor-pointer group flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <!-- 왼쪽: 아이콘 + 정보 -->
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-emerald-50 group-hover:text-emerald-500 transition-colors shrink-0">
+                                    <i class="fa-solid fa-capsules text-xl"></i>
                                 </div>
-                                <span class="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-full h-fit">진료 원활</span>
-                            </div>
-                            <h3 class="text-lg font-bold mb-1">세브란스 병원</h3>
-                            <p class="text-sm text-slate-400 mb-8 flex items-center gap-1">
-                                <i class="fa-solid fa-location-dot text-xs"></i> 신촌동 · 0.3km
-                            </p>
-                            <div class="flex justify-between items-center pt-4 border-t border-slate-50">
-                                <div class="flex flex-col">
-                                    <span class="text-[10px] text-slate-400 font-bold uppercase mb-0.5">평균 대기</span>
-                                    <span class="text-xl font-bold text-slate-900">12분</span>
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <h3 class="text-lg font-bold text-slate-900">연세 365 약국</h3>
+                                        <span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-md border border-emerald-100">영업중</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400 font-medium">서울 서대문구 신촌로 123 · 150m</p>
                                 </div>
-                                <i class="fa-solid fa-arrow-right text-slate-200 group-hover:text-indigo-500 transition-colors"></i>
                             </div>
-                        </a>
+                            
+                            <!-- 오른쪽: 상세 정보 -->
+                            <div class="flex flex-row md:flex-col gap-3 md:gap-1 text-right w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-slate-50 pt-3 md:pt-0">
+                                 <div class="flex items-center gap-2 md:justify-end">
+                                    <i class="fa-regular fa-clock text-slate-400 text-xs"></i>
+                                    <span class="text-sm text-slate-600 font-medium">09:00 ~ 22:00</span>
+                                 </div>
+                                 <div class="flex items-center gap-2 md:justify-end">
+                                    <i class="fa-solid fa-phone text-slate-400 text-xs"></i>
+                                    <span class="text-sm text-slate-600 font-medium">02-312-5678</span>
+                                 </div>
+                            </div>
+                        </div>
 
-                        <a href="Hospital_page.html" class="block bg-white p-6 rounded-[24px] border border-slate-100 card-hover cursor-pointer group">
-                            <div class="flex justify-between items-start mb-6">
-                                <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center group-hover:bg-indigo-50 transition-colors">
-                                    <i class="fa-solid fa-stethoscope text-slate-400 group-hover:text-indigo-500"></i>
+                        <!-- 약국 리스트 아이템 2 -->
+                        <div class="bg-white p-5 rounded-[24px] border border-slate-100 card-hover cursor-pointer group flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-orange-50 group-hover:text-orange-500 transition-colors shrink-0">
+                                    <i class="fa-solid fa-mortar-pestle text-xl"></i>
                                 </div>
-                                <span class="px-3 py-1 bg-amber-50 text-amber-600 text-[10px] font-bold rounded-full h-fit">대기 보통</span>
-                            </div>
-                            <h3 class="text-lg font-bold mb-1">아이사랑 소아과</h3>
-                            <p class="text-sm text-slate-400 mb-8 flex items-center gap-1">
-                                <i class="fa-solid fa-location-dot text-xs"></i> 연희동 · 0.8km
-                            </p>
-                            <div class="flex justify-between items-center pt-4 border-t border-slate-50">
-                                <div class="flex flex-col">
-                                    <span class="text-[10px] text-slate-400 font-bold uppercase mb-0.5">평균 대기</span>
-                                    <span class="text-xl font-bold text-slate-900">45분</span>
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <h3 class="text-lg font-bold text-slate-900">행복한 온누리 약국</h3>
+                                        <span class="px-2 py-0.5 bg-orange-50 text-orange-600 text-[10px] font-bold rounded-md border border-orange-100">곧 마감</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400 font-medium">서울 서대문구 연희로 88 · 400m</p>
                                 </div>
-                                <i class="fa-solid fa-arrow-right text-slate-200 group-hover:text-indigo-500 transition-colors"></i>
                             </div>
-                        </a>
+                            
+                            <div class="flex flex-row md:flex-col gap-3 md:gap-1 text-right w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-slate-50 pt-3 md:pt-0">
+                                 <div class="flex items-center gap-2 md:justify-end">
+                                    <i class="fa-regular fa-clock text-slate-400 text-xs"></i>
+                                    <span class="text-sm text-slate-600 font-medium">09:00 ~ 18:00</span>
+                                 </div>
+                                 <div class="flex items-center gap-2 md:justify-end">
+                                    <i class="fa-solid fa-phone text-slate-400 text-xs"></i>
+                                    <span class="text-sm text-slate-600 font-medium">02-333-9999</span>
+                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- 약국 리스트 아이템 3 -->
+                        <div class="bg-white p-5 rounded-[24px] border border-slate-100 card-hover cursor-pointer group flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-500 transition-colors shrink-0">
+                                    <i class="fa-solid fa-pills text-xl"></i>
+                                </div>
+                                <div>
+                                    <div class="flex items-center gap-2 mb-1">
+                                        <h3 class="text-lg font-bold text-slate-900">메디칼 정문 약국</h3>
+                                        <span class="px-2 py-0.5 bg-indigo-50 text-indigo-600 text-[10px] font-bold rounded-md border border-indigo-100">심야운영</span>
+                                    </div>
+                                    <p class="text-xs text-slate-400 font-medium">서울 서대문구 성산로 321 · 800m</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex flex-row md:flex-col gap-3 md:gap-1 text-right w-full md:w-auto justify-between md:justify-end border-t md:border-t-0 border-slate-50 pt-3 md:pt-0">
+                                 <div class="flex items-center gap-2 md:justify-end">
+                                    <i class="fa-regular fa-clock text-slate-400 text-xs"></i>
+                                    <span class="text-sm text-slate-600 font-medium">10:00 ~ 01:00</span>
+                                 </div>
+                                 <div class="flex items-center gap-2 md:justify-end">
+                                    <i class="fa-solid fa-phone text-slate-400 text-xs"></i>
+                                    <span class="text-sm text-slate-600 font-medium">02-324-7777</span>
+                                 </div>
+                            </div>
+                        </div>
 
                     </div>
                 </div>
