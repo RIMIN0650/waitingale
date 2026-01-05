@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediQ - 아이디 찾기</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap');
+        body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-6">
+
+    <div class="w-full max-w-md">
+        <div class="text-center mb-10">
+            <a href="index.html" class="inline-flex items-center gap-2.5">
+                <div class="bg-slate-900 text-white w-10 h-10 flex items-center justify-center rounded-xl shadow-lg">
+                    <i class="fa-solid fa-square-h text-2xl"></i>
+                </div>
+                <span class="text-2xl font-bold tracking-tight text-slate-900">MediQ</span>
+            </a>
+            <h2 class="text-xl font-bold text-slate-900 mt-6">아이디 찾기</h2>
+            <p class="text-sm text-slate-500 mt-2">가입 시 등록한 정보를 입력해 주세요.</p>
+        </div>
+
+        <div class="bg-white p-8 rounded-[32px] shadow-xl shadow-slate-100 border border-slate-100">
+            <div class="space-y-5">
+                <div>
+                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">이름</label>
+                    <input type="text" placeholder="홍길동" class="w-full mt-1.5 px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:border-indigo-500 focus:bg-white transition-all text-sm font-medium">
+                </div>
+                <div>
+                    <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider ml-1">휴대폰 번호</label>
+                    <input type="tel" placeholder="010-0000-0000" class="w-full mt-1.5 px-5 py-4 bg-slate-50 border border-slate-100 rounded-2xl outline-none focus:border-indigo-500 focus:bg-white transition-all text-sm font-medium">
+                </div>
+                
+                <button class="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-indigo-600 transition shadow-lg shadow-slate-200 mt-4">
+                    아이디 확인
+                </button>
+            </div>
+
+            <div class="flex justify-center gap-4 mt-8 text-xs font-bold">
+                <a href="login.html" class="text-slate-400 hover:text-slate-600">로그인으로 돌아가기</a>
+                <span class="text-slate-200">|</span>
+                <a href="find-pw.html" class="text-slate-400 hover:text-slate-600">비밀번호 찾기</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

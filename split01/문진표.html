@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediQ - 모바일 문진표</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap');
+        body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; }
+        .step-active { background-color: #4f46e5; color: white; }
+        .step-inactive { background-color: #e2e8f0; color: #94a3b8; }
+    </style>
+</head>
+<body class="text-slate-900 pb-20">
+
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-bottom border-slate-100 px-6 py-4 flex items-center justify-between">
+        <button onclick="history.back()" class="text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-chevron-left text-lg"></i>
+        </button>
+        <h1 class="text-lg font-bold tracking-tight">모바일 문진표</h1>
+        <div class="w-6"></div> </nav>
+
+    <main class="max-w-2xl mx-auto px-6 py-8">
+        <div class="flex items-center justify-center gap-3 mb-10">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold step-active">1</div>
+            <div class="w-12 h-0.5 bg-slate-200"></div>
+            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold step-inactive">2</div>
+            <div class="w-12 h-0.5 bg-slate-200"></div>
+            <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold step-inactive">3</div>
+        </div>
+
+        <section class="space-y-10">
+            <div>
+                <h2 class="text-xl font-bold mb-2">현재 가장 불편한 증상은 무엇인가요?</h2>
+                <p class="text-sm text-slate-500 mb-6">중복 선택이 가능합니다.</p>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <button class="p-4 border-2 border-indigo-600 bg-indigo-50 text-indigo-600 rounded-2xl font-bold text-sm text-left flex items-center justify-between">
+                        발열 / 오한 <i class="fa-solid fa-circle-check"></i>
+                    </button>
+                    <button class="p-4 border-2 border-slate-100 bg-white text-slate-600 rounded-2xl font-bold text-sm text-left hover:border-slate-200 transition">
+                        기침 / 가래
+                    </button>
+                    <button class="p-4 border-2 border-slate-100 bg-white text-slate-600 rounded-2xl font-bold text-sm text-left hover:border-slate-200 transition">
+                        두통 / 어지럼증
+                    </button>
+                    <button class="p-4 border-2 border-slate-100 bg-white text-slate-600 rounded-2xl font-bold text-sm text-left hover:border-slate-200 transition">
+                        복통 / 소화불량
+                    </button>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-bold mb-2">증상은 언제부터 시작되었나요?</h2>
+                <div class="mt-4">
+                    <input type="date" class="w-full p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-indigo-500 font-medium">
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-xl font-bold mb-2">현재 복용 중인 약이 있으신가요?</h2>
+                <div class="flex gap-3 mt-4">
+                    <button class="flex-1 py-4 bg-white border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition">아니오</button>
+                    <button class="flex-1 py-4 bg-white border border-slate-200 rounded-2xl font-bold text-slate-600 hover:bg-slate-50 transition">예</button>
+                </div>
+                <textarea placeholder="복용 중인 약을 적어주세요 (생략 가능)" class="w-full mt-3 p-4 bg-white border border-slate-200 rounded-2xl outline-none focus:border-indigo-500 text-sm h-24 resize-none"></textarea>
+            </div>
+        </section>
+
+        <div class="fixed bottom-0 left-0 right-0 p-6 bg-white/80 backdrop-blur-lg border-t border-slate-100">
+            <div class="max-w-2xl mx-auto flex gap-4">
+                <button class="flex-1 bg-slate-100 text-slate-900 font-bold py-4 rounded-2xl hover:bg-slate-200 transition">임시 저장</button>
+                <button class="flex-[2] bg-indigo-600 text-white font-bold py-4 rounded-2xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">다음 단계</button>
+            </div>
+        </div>
+    </main>
+
+</body>
+</html>
