@@ -16,6 +16,10 @@
         .choice-btn.selected { border-color: #4f46e5; background-color: #f5f3ff; color: #4f46e5; }
         #save-toast { transition: all 0.3s ease; transform: translate(-50%, 100px); opacity: 0; }
         #save-toast.show { transform: translate(-50%, 0); opacity: 1; }
+        
+        /* 애니메이션 효과 */
+        .animate-fade-in { animation: fadeIn 0.3s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="text-slate-900 pb-32">
@@ -43,11 +47,19 @@
                     <div>
                         <h2 class="text-xl font-bold mb-2">현재 가장 불편한 증상은 무엇인가요?</h2>
                         <p class="text-sm text-slate-500 mb-6">중복 선택이 가능합니다.</p>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button type="button" onclick="toggleSelect(this)" class="choice-btn p-4 border-2 border-slate-100 bg-white text-slate-600 rounded-2xl font-bold text-sm text-left transition">발열 / 오한</button>
-                            <button type="button" onclick="toggleSelect(this)" class="choice-btn p-4 border-2 border-slate-100 bg-white text-slate-600 rounded-2xl font-bold text-sm text-left transition">기침 / 가래</button>
-                            <button type="button" onclick="toggleSelect(this)" class="choice-btn p-4 border-2 border-slate-100 bg-white text-slate-600 rounded-2xl font-bold text-sm text-left transition">두통 / 어지럼증</button>
-                            <button type="button" onclick="toggleSelect(this)" class="choice-btn p-4 border-2 border-slate-100 bg-white text-slate-600 rounded-2xl font-bold text-sm text-left transition">복통 / 소화불량</button>
+                        <div class="grid grid-cols-2 gap-3" id="symptoms-group">
+                            <button type="button" onclick="toggleSelect(this)" class="choice-btn p-4 border-2 border-slate-100 bg-white rounded-2xl font-bold text-sm text-left transition">발열 / 오한</button>
+                            <button type="button" onclick="toggleSelect(this)" class="choice-btn p-4 border-2 border-slate-100 bg-white rounded-2xl font-bold text-sm text-left transition">기침 / 가래</button>
+                            <button type="button" onclick="toggleSelect(this)" class="choice-btn p-4 border-2 border-slate-100 bg-white rounded-2xl font-bold text-sm text-left transition">두통 / 어지럼증</button>
+                            
+                            <button type="button" onclick="toggleOtherInput(this)" id="other-symptom-btn" class="choice-btn p-4 border-2 border-slate-100 bg-white rounded-2xl font-bold text-sm text-left transition flex items-center justify-between">
+                                기타 <i class="fa-solid fa-pen-to-square text-slate-300"></i>
+                            </button>
+                        </div>
+                        
+                        <div id="other-input-container" class="hidden mt-3 animate-fade-in">
+                            <input type="text" id="other-symptom-text" placeholder="직접 증상을 입력해주세요 (예: 피부 발진)" 
+                                   class="w-full p-4 bg-slate-50 border border-indigo-200 rounded-2xl outline-none focus:border-indigo-500 focus:bg-white transition-all text-sm font-medium">
                         </div>
                     </div>
                     <div>
@@ -132,7 +144,10 @@
                 </button>
                 
                 <button onclick="nextStep()" id="next-btn" class="flex-1 bg-indigo-600 text-white font-bold py-4 rounded-2xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">다음 단계</button>
-                <button onclick="submitForm()" id="submit-btn" class="hidden flex-1 bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-indigo-600 transition shadow-xl">문진표 제출 및 접수하기</button>
+                
+                <a href="reservation.html" id="submit-btn" class="hidden flex-1 bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-indigo-600 transition shadow-xl flex items-center justify-center text-center">
+                    문진표 제출 및 접수하기
+                </a>
             </div>
         </div>
     </main>
@@ -170,9 +185,11 @@
             if (currentStep === 3) {
                 nextBtn.classList.add('hidden');
                 submitBtn.classList.remove('hidden');
+                submitBtn.classList.add('flex'); // A태그이므로 flex display 추가
             } else {
                 nextBtn.classList.remove('hidden');
                 submitBtn.classList.add('hidden');
+                submitBtn.classList.remove('flex');
             }
         }
 
@@ -199,6 +216,25 @@
             btn.classList.toggle('border-slate-100');
         }
 
+        function toggleOtherInput(btn) {
+            toggleSelect(btn); // 기존 선택 효과 적용
+            
+            // 아이콘 색상 변경
+            const icon = btn.querySelector('i');
+            icon.classList.toggle('text-indigo-500');
+            icon.classList.toggle('text-slate-300');
+
+            // 입력창 표시/숨김 토글
+            const container = document.getElementById('other-input-container');
+            if (btn.classList.contains('selected')) {
+                container.classList.remove('hidden');
+                document.getElementById('other-symptom-text').focus();
+            } else {
+                container.classList.add('hidden');
+                document.getElementById('other-symptom-text').value = '';
+            }
+        }
+
         function setRadio(btn) {
             const siblings = btn.parentElement.querySelectorAll('button');
             siblings.forEach(s => {
@@ -213,11 +249,6 @@
             const toast = document.getElementById('save-toast');
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 2000);
-        }
-
-        function submitForm() {
-            alert("문진표가 병원으로 성공적으로 전송되었습니다.");
-            location.href = "index.html";
         }
     </script>
 </body>
