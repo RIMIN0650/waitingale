@@ -47,7 +47,7 @@
         <!-- 상단 헤더 -->
         <div class="flex items-center justify-between mb-8">
             <div class="flex items-center gap-4">
-                <button class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition shadow-sm">
+                <button id="back-to-main-btn" class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition shadow-sm">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
                 <h1 class="text-2xl font-bold">마이페이지</h1>
@@ -261,7 +261,14 @@
         </div>
     </main>
 
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
+
+        $("#back-to-main-btn").on("click", function(){
+            location.href="index.html";
+        });
+
         const medicalHistoryData = [
             {
                 hospital: "서울대학교병원",
