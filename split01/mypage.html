@@ -3,35 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-     <script src="https://cdn.tailwindcss.com"></script>
+    <title>MediQ - 마이페이지</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
-    <!-- Leaflet Map CSS & JS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap');
+        body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        
+        /* 말풍선 꼬리 효과를 위한 커스텀 스타일 */
+        .speech-bubble {
+            position: relative;
+            background: white;
+            border-radius: 2rem;
+            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.05));
+        }
+        .speech-bubble::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: var(--arrow-left, 12.5%);
+            transform: translateX(-50%);
+            border-left: 12px solid transparent;
+            border-right: 12px solid transparent;
+            border-bottom: 12px solid white;
+            transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* 활성화된 버튼 스타일 */
+        .active-btn {
+            border-color: currentColor !important;
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-4px);
+            background-color: #fdfdfd;
+        }
+        .tab-btn {
+            transition: all 0.3s ease;
+        }
+    </style>
 </head>
 <body>
-    <main id="view-mypage" class="max-w-7xl mx-auto px-6 py-10 view-section">
+    <main class="max-w-7xl mx-auto px-6 py-10">
+        <!-- 상단 헤더 -->
         <div class="flex items-center justify-between mb-8">
             <div class="flex items-center gap-4">
-                <button onclick="showView('dashboard')" class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition shadow-sm">
+                <button class="w-10 h-10 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 transition shadow-sm">
                     <i class="fa-solid fa-arrow-left"></i>
                 </button>
                 <h1 class="text-2xl font-bold">마이페이지</h1>
             </div>
-            <button class="text-slate-400 hover:text-indigo-600"><i class="fa-solid fa-gear text-xl"></i></button>
+            <button class="text-slate-400 hover:text-indigo-600 transition"><i class="fa-solid fa-gear text-xl"></i></button>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <!-- Left Sidebar -->
+            <!-- 왼쪽 프로필 사이드바 -->
             <div class="lg:col-span-4 space-y-6">
                 <div class="bg-white rounded-[32px] p-8 border border-slate-100 shadow-sm relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-r from-indigo-500 to-purple-500"></div>
                     <div class="relative flex flex-col items-center">
                         <div class="w-24 h-24 rounded-full bg-white p-1 mb-4 shadow-lg">
-                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-full h-full rounded-full bg-slate-100">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-full h-full rounded-full bg-slate-100" alt="profile">
                         </div>
                         <h2 class="text-xl font-bold">김메디 <span class="text-sm font-normal text-slate-400">님</span></h2>
                         <p class="text-sm text-slate-500 mb-6">medi_kim@example.com</p>
@@ -65,154 +96,252 @@
                     </div>
                 </div>
 
-                <button onclick="logout()" class="w-full py-4 text-slate-400 font-bold border border-slate-200 rounded-2xl hover:bg-slate-50 hover:text-rose-500 transition">
+                <button class="w-full py-4 text-slate-400 font-bold border border-slate-200 rounded-2xl hover:bg-slate-50 hover:text-rose-500 transition">
                     <i class="fa-solid fa-right-from-bracket mr-2"></i> 로그아웃
                 </button>
             </div>
 
-            <!-- Right Content -->
-            <div class="lg:col-span-8 space-y-8">
-                <div>
-                    <h3 class="text-lg font-bold mb-4 px-2">내 의료 지갑</h3>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <button class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:border-indigo-200 hover:shadow-md transition flex flex-col items-center gap-3 group">
-                            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-file-prescription text-xl"></i>
-                            </div>
-                            <span class="text-sm font-bold text-slate-600">처방전</span>
-                        </button>
-                        <button class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:border-emerald-200 hover:shadow-md transition flex flex-col items-center gap-3 group">
-                            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-file-invoice-dollar text-xl"></i>
-                            </div>
-                            <span class="text-sm font-bold text-slate-600">결제/영수증</span>
-                        </button>
-                        <button class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:border-amber-200 hover:shadow-md transition flex flex-col items-center gap-3 group">
-                            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                <i class="fa-solid fa-square-poll-vertical text-xl"></i>
-                            </div>
-                            <span class="text-sm font-bold text-slate-600">검사 결과</span>
-                        </button>
-                        <button  id="btn-medical-history"
-                            class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:border-rose-200 hover:shadow-md transition flex flex-col items-center gap-3 group">
-                            <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+            <!-- 오른쪽 메인 콘텐츠 -->
+            <div class="lg:col-span-8 space-y-10">
+                <!-- 1. 내 의료 지갑 섹션 -->
+                <section>
+                    <h3 class="text-lg font-bold mb-5 px-2 text-slate-800">내 의료 지갑</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                        <button onclick="showTab('medical-history', 1)" id="btn-medical-history"
+                            class="tab-btn bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md flex flex-col items-center gap-3 group text-rose-600 active-btn">
+                            <div class="w-12 h-12 rounded-2xl bg-rose-50 flex items-center justify-center group-hover:scale-110 transition-transform">
                                 <i class="fa-solid fa-heart-pulse text-xl"></i>
                             </div>
                             <span class="text-sm font-bold text-slate-600">진료 기록</span>
                         </button>
-                    </div>
-                </div>
 
-                <div class="bg-indigo-600 rounded-[32px] p-8 text-white relative overflow-hidden shadow-xl shadow-indigo-200">
-                    <div class="relative z-10 flex justify-between items-end">
-                        <div>
-                            <span class="inline-block px-3 py-1 bg-white/20 rounded-lg text-xs font-bold mb-4 backdrop-blur-sm">진료 대기 중</span>
-                            <h3 class="text-2xl font-bold mb-1">서울대학교병원 (내과)</h3>
-                            <p class="text-indigo-200 text-sm">2023.10.27 (금) · 14:30 예약</p>
+                        <button onclick="showTab('prescriptions', 2)" id="btn-prescriptions"
+                            class="tab-btn bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md flex flex-col items-center gap-3 group text-indigo-600">
+                            <div class="w-12 h-12 rounded-2xl bg-indigo-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-file-prescription text-xl"></i>
+                            </div>
+                            <span class="text-sm font-bold text-slate-600">처방전</span>
+                        </button>
+
+                        <button onclick="showTab('billing', 3)" id="btn-billing"
+                            class="tab-btn bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md flex flex-col items-center gap-3 group text-emerald-600">
+                            <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-file-invoice-dollar text-xl"></i>
+                            </div>
+                            <span class="text-sm font-bold text-slate-600">결제/영수증</span>
+                        </button>
+
+                        <button onclick="showTab('results', 4)" id="btn-results"
+                            class="tab-btn bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md flex flex-col items-center gap-3 group text-amber-600">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-square-poll-vertical text-xl"></i>
+                            </div>
+                            <span class="text-sm font-bold text-slate-600">검사 결과</span>
+                        </button>
+                    </div>
+
+                    <!-- 말풍선 상세 내용 -->
+                    <div id="tab-container" class="speech-bubble border border-slate-100 p-8 min-h-[350px]" style="--arrow-left: 12.5%;">
+                        <!-- 진료 기록 -->
+                        <div id="content-medical-history" class="tab-content">
+                            <div class="flex items-center justify-between mb-6">
+                                <h4 class="text-xl font-bold flex items-center gap-2 text-rose-600">
+                                    <i class="fa-solid fa-heart-pulse"></i> 나의 진료 기록
+                                </h4>
+                                <span class="text-xs text-slate-400">최근 1년 기준</span>
+                            </div>
+                            <div id="medical-history-list" class="space-y-4">
+                                <!-- JS로 렌더링 -->
+                            </div>
                         </div>
-                        <div class="text-right">
-                            <p class="text-xs text-indigo-300 font-bold uppercase mb-1">대기 순번</p>
-                            <p class="text-4xl font-black">3<span class="text-lg font-medium opacity-60">번째</span></p>
+
+                        <!-- 처방전 -->
+                        <div id="content-prescriptions" class="tab-content hidden">
+                            <h4 class="text-xl font-bold mb-6 flex items-center gap-2 text-indigo-600">
+                                <i class="fa-solid fa-capsules"></i> 발행된 처방전
+                            </h4>
+                            <div class="bg-indigo-50 p-6 rounded-2xl border border-indigo-100">
+                                <p class="text-slate-600 text-sm leading-relaxed">
+                                    현재 보관된 처방전이 <strong class="text-indigo-600">2건</strong> 있습니다.<br>
+                                    약국 제출용 QR 코드를 확인하거나 PDF로 다운로드할 수 있습니다.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- 결제/영수증 -->
+                        <div id="content-billing" class="tab-content hidden">
+                            <h4 class="text-xl font-bold mb-6 flex items-center gap-2 text-emerald-600">
+                                <i class="fa-solid fa-receipt"></i> 결제 내역
+                            </h4>
+                            <p class="text-slate-600 text-sm">최근 결제 내역: 15,400원 (2023.12.28). 연말정산용 서류 출력이 가능합니다.</p>
+                        </div>
+
+                        <!-- 검사 결과 -->
+                        <div id="content-results" class="tab-content hidden">
+                            <h4 class="text-xl font-bold mb-6 flex items-center gap-2 text-amber-600">
+                                <i class="fa-solid fa-chart-line"></i> 검사 결과 보고서
+                            </h4>
+                            <p class="text-slate-600 text-sm">혈액 검사 결과가 업데이트되었습니다. 정상 범위를 벗어난 항목이 1건 있습니다.</p>
                         </div>
                     </div>
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                </div>
+                </section>
+
+                <!-- 2. 다음 병원 일정 섹션 -->
+                <section>
+                    <h3 class="text-lg font-bold mb-4 px-2 flex items-center justify-between">
+                        <span>내 다음 병원 일정</span>
+                        <a href="#" class="text-xs text-slate-400 hover:text-indigo-600 transition">전체보기</a>
+                    </h3>
+                    <div class="bg-white border border-slate-100 rounded-[32px] p-6 shadow-sm space-y-4">
+                        <div class="flex items-center gap-4 pb-4 border-b border-slate-50 last:border-0 last:pb-0">
+                            <div class="flex flex-col items-center justify-center w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl shrink-0">
+                                <span class="text-[10px] font-bold uppercase">11월</span>
+                                <span class="text-xl font-bold">15</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-slate-900">연세세브란스 (피부과)</h4>
+                                <p class="text-xs text-slate-500">정기 레이저 치료 · 오후 04:00</p>
+                            </div>
+                            <button class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:text-indigo-600 transition">
+                                <i class="fa-regular fa-calendar-check"></i>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center gap-4 pb-4 border-b border-slate-50 last:border-0 last:pb-0">
+                            <div class="flex flex-col items-center justify-center w-14 h-14 bg-slate-50 text-slate-500 rounded-2xl shrink-0">
+                                <span class="text-[10px] font-bold uppercase">12월</span>
+                                <span class="text-xl font-bold">20</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold text-slate-900">아이사랑 치과</h4>
+                                <p class="text-xs text-slate-500">스케일링 예약 · 오전 10:30</p>
+                            </div>
+                            <button class="w-8 h-8 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-50 hover:text-indigo-600 transition">
+                                <i class="fa-regular fa-calendar-check"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. 가족 구성원 관리 섹션 -->
+                <section>
+                    <h3 class="text-lg font-bold mb-4 px-2">가족 구성원 관리</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white border border-slate-100 rounded-2xl p-5 flex items-center gap-4 hover:shadow-md transition cursor-pointer group">
+                            <div class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">👶</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-0.5">
+                                    <h4 class="font-bold text-slate-900">김하늘</h4>
+                                    <span class="px-2 py-0.5 bg-rose-100 text-rose-600 text-[10px] font-bold rounded-full">진료 중</span>
+                                </div>
+                                <p class="text-xs text-slate-500">아이사랑 소아과</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                        </div>
+
+                        <div class="bg-white border border-slate-100 rounded-2xl p-5 flex items-center gap-4 hover:shadow-md transition cursor-pointer group">
+                            <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">👩</div>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2 mb-0.5">
+                                    <h4 class="font-bold text-slate-900">이영희</h4>
+                                    <span class="px-2 py-0.5 bg-emerald-100 text-emerald-600 text-[10px] font-bold rounded-full">건강함</span>
+                                </div>
+                                <p class="text-xs text-slate-500">최근 진료: 3개월 전</p>
+                            </div>
+                            <i class="fa-solid fa-chevron-right text-slate-300 text-xs"></i>
+                        </div>
+
+                        <button class="border-2 border-dashed border-slate-200 rounded-2xl p-5 flex items-center justify-center gap-2 text-slate-400 hover:border-indigo-300 hover:text-indigo-500 hover:bg-indigo-50 transition min-h-[88px]">
+                            <i class="fa-solid fa-plus"></i>
+                            <span class="text-sm font-bold">가족 추가하기</span>
+                        </button>
+                    </div>
+                </section>
             </div>
         </div>
     </main>
 
-    <!-- 진료 기록 모달 -->
-    <div id="medical-history-modal" class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4">
-        <div class="bg-white w-full max-w-2xl rounded-[32px] p-8 shadow-2xl relative">
-
-            <button onclick="closeMedicalHistory()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600">
-                <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-
-            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
-                <i class="fa-solid fa-heart-pulse text-rose-500"></i>
-                나의 진료 기록
-            </h2>
-
-            <div id="medical-history-list" class="space-y-4">
-                <!-- JS로 렌더링 -->
-            </div>
-        </div>
-    </div>
-
-
-
-
     <script>
-    /* 예시 진료 기록 데이터 */
-    const medicalHistoryData = [
-        {
-            hospital: "서울대학교병원",
-            department: "내과",
-            date: "2023-10-27",
-            doctor: "김철수 교수",
-            diagnosis: "급성 위염",
-            prescription: "위장약 5일분"
-        },
-        {
-            hospital: "아이사랑 소아과",
-            department: "소아청소년과",
-            date: "2023-07-13",
-            doctor: "이영희 원장",
-            diagnosis: "감기",
-            prescription: "해열제, 시럽"
-        },
-        {
-            hospital: "세브란스 병원",
-            department: "정형외과",
-            date: "2023-03-02",
-            doctor: "박민준 전문의",
-            diagnosis: "발목 염좌",
-            prescription: "물리치료 3회"
-        }
-    ];
+        const medicalHistoryData = [
+            {
+                hospital: "서울대학교병원",
+                department: "내과",
+                date: "2023-10-27",
+                doctor: "김철수 교수",
+                diagnosis: "급성 위염",
+                prescription: "위장약 5일분"
+            },
+            {
+                hospital: "세브란스 병원",
+                department: "정형외과",
+                date: "2023-03-02",
+                doctor: "박민준 전문의",
+                diagnosis: "발목 염좌",
+                prescription: "물리치료 3회"
+            }
+        ];
 
-    /* 진료 기록 열기 */
-    document.getElementById("btn-medical-history").addEventListener("click", () => {
-        renderMedicalHistory();
-        document.getElementById("medical-history-modal").classList.remove("hidden");
-    });
-
-    /* 진료 기록 닫기 */
-    function closeMedicalHistory() {
-        document.getElementById("medical-history-modal").classList.add("hidden");
-    }
-
-    /* 진료 기록 렌더링 */
-    function renderMedicalHistory() {
-        const list = document.getElementById("medical-history-list");
-        list.innerHTML = "";
-
-        medicalHistoryData.forEach(record => {
-            const card = document.createElement("div");
-            card.className = "bg-slate-50 border border-slate-200 rounded-2xl p-5";
-
-            card.innerHTML = `
-                <div class="flex justify-between items-start mb-2">
-                    <div>
-                        <h3 class="font-bold text-slate-900">${record.hospital}</h3>
-                        <p class="text-sm text-slate-500">${record.department}</p>
+        function renderMedicalHistory() {
+            const listContainer = document.getElementById('medical-history-list');
+            if (!listContainer) return;
+            listContainer.innerHTML = medicalHistoryData.map(item => `
+                <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100 hover:border-rose-200 transition-colors">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <span class="text-[10px] font-bold text-rose-500 bg-rose-100/50 px-2 py-1 rounded-md mr-2">${item.department}</span>
+                            <h5 class="inline font-bold text-slate-800">${item.hospital}</h5>
+                        </div>
+                        <span class="text-xs text-slate-400 font-medium">${item.date}</span>
                     </div>
-                    <span class="text-xs font-bold text-slate-400">${record.date}</span>
+                    <div class="grid grid-cols-2 gap-y-2 text-sm">
+                        <div class="text-slate-500">진단명</div>
+                        <div class="text-slate-800 font-medium">${item.diagnosis}</div>
+                        <div class="text-slate-500">처방</div>
+                        <div class="text-slate-800 font-medium text-xs">${item.prescription}</div>
+                    </div>
                 </div>
+            `).join('');
+        }
 
-                <div class="text-sm text-slate-600 space-y-1 mt-3">
-                    <p><i class="fa-solid fa-user-doctor mr-2 text-slate-400"></i>${record.doctor}</p>
-                    <p><i class="fa-solid fa-notes-medical mr-2 text-slate-400"></i>진단: ${record.diagnosis}</p>
-                    <p><i class="fa-solid fa-pills mr-2 text-slate-400"></i>처방: ${record.prescription}</p>
-                </div>
-            `;
+        function showTab(tabId, index) {
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+            document.getElementById('content-' + tabId).classList.remove('hidden');
 
-            list.appendChild(card);
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active-btn'));
+            document.getElementById('btn-' + tabId).classList.add('active-btn');
+
+            const container = document.getElementById('tab-container');
+            let arrowPos;
+            
+            if (window.innerWidth < 768) {
+                // 모바일 레이아웃 (2x2 그리드 대응)
+                if (index === 1) arrowPos = "25%";
+                else if (index === 2) arrowPos = "75%";
+                else if (index === 3) arrowPos = "25%";
+                else if (index === 4) arrowPos = "75%";
+            } else {
+                // 데스크탑 레이아웃 (1x4 그리드 대응)
+                arrowPos = (index * 25 - 12.5) + "%";
+            }
+            
+            container.style.setProperty('--arrow-left', arrowPos);
+            if(tabId === 'medical-history') renderMedicalHistory();
+        }
+
+        window.onload = () => {
+            renderMedicalHistory();
+            // 초기 탭 설정
+            showTab('medical-history', 1);
+        };
+
+        window.addEventListener('resize', () => {
+            const activeBtn = document.querySelector('.tab-btn.active-btn');
+            if (activeBtn) {
+                const id = activeBtn.id.replace('btn-', '');
+                const indexMap = { 'medical-history': 1, 'prescriptions': 2, 'billing': 3, 'results': 4 };
+                showTab(id, indexMap[id]);
+            }
         });
-    }
     </script>
-
-
 </body>
 </html>
