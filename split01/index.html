@@ -241,56 +241,116 @@
 
             <div class="lg:col-span-4">
                 
-                <div id="panel-health-forecast" class="bg-slate-900 rounded-[32px] p-8 text-white sticky top-24 shadow-2xl shadow-slate-300 transition-all duration-300">
-                    <div class="flex items-center justify-between mb-10 text-balance">
-                        <div class="flex items-center gap-2">
-                            <i class="fa-solid fa-cloud-sun-rain text-indigo-400 animate-pulse"></i>
-                            <h2 class="text-lg font-bold tracking-tight">실시간 건강 예보</h2>
-                        </div>
-                        <span class="text-[10px] font-bold text-indigo-300/60 uppercase tracking-widest">Live Updates</span>
-                    </div>
-                    <div class="space-y-8">
-                        <div>
-                            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-4">오늘의 주요 건강 이슈</p>
-                            <div class="space-y-5">
-                                <div class="flex flex-col gap-2">
-                                    <div class="flex justify-between text-xs font-medium">
-                                        <span class="text-slate-300"><i class="fa-solid fa-virus mr-2"></i>독감(인플루엔자)</span>
-                                        <span class="text-rose-400 font-bold">주의보 발령</span>
-                                    </div>
-                                    <div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden">
-                                        <div class="h-full bg-rose-500" style="width: 80%"></div>
-                                    </div>
-                                    <p class="text-[10px] text-slate-400 mt-1">서대문구 내 확진자 증가 추세</p>
-                                </div>
-                                <div class="flex flex-col gap-2">
-                                    <div class="flex justify-between text-xs font-medium">
-                                        <span class="text-slate-300"><i class="fa-solid fa-smog mr-2"></i>미세먼지</span>
-                                        <span class="text-emerald-400 font-bold">좋음</span>
-                                    </div>
-                                    <div class="h-1 w-full bg-slate-800 rounded-full overflow-hidden">
-                                        <div class="h-full bg-emerald-500" style="width: 20%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="bg-white/5 rounded-2xl p-5 border border-white/5">
-                            <p class="text-[10px] text-slate-500 font-bold uppercase tracking-widest mb-4">주변 병원 혼잡도 요약</p>
-                            <div class="grid grid-cols-2 gap-3 mb-2">
-                                <div class="bg-slate-800 p-3 rounded-xl text-center">
-                                    <p class="text-xs text-slate-400 mb-1">소아과</p>
-                                    <p class="text-emerald-400 font-bold">원활</p>
-                                </div>
-                                <div class="bg-slate-800 p-3 rounded-xl text-center">
-                                    <p class="text-xs text-slate-400 mb-1">내과</p>
-                                    <p class="text-amber-400 font-bold">다소 대기</p>
-                                </div>
-                            </div>
-                            <p class="text-[10px] text-slate-500 text-center">현재 시각 기준 (실시간 업데이트)</p>
-                        </div>
-                    </div>
+                <!-- 병원 목록 패널 -->
+<div id="panel-hospital-list"
+     class="bg-slate-900 rounded-[32px] p-8 text-white sticky top-24 shadow-2xl shadow-slate-300">
+
+    <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-hospital text-indigo-400"></i>
+            <h2 class="text-lg font-bold">주변 병원 목록</h2>
+        </div>
+    </div>
+
+    <!-- Column Header -->
+    <div class="grid grid-cols-12 text-[10px] text-slate-400 font-bold uppercase mb-3 px-2">
+        <div class="col-span-6">병원명</div>
+        <div class="col-span-3 text-center">예상 대기</div>
+        <div class="col-span-3 text-right">거리</div>
+    </div>
+
+    <!-- Hospital List -->
+    <div class="space-y-3">
+
+        <button onclick="openHospitalDetail({
+            name:'서울대학교병원',
+            dept:'내과',
+            wait:'약 25분',
+            distance:'1.2km',
+            address:'서울 종로구 대학로 101',
+            phone:'02-2072-2114'
+        })"
+        class="w-full bg-slate-800 hover:bg-slate-700 rounded-2xl px-4 py-4 transition">
+            <div class="grid grid-cols-12 items-center text-sm">
+                <div class="col-span-6">
+                    <p class="font-bold">서울대학교병원</p>
+                    <p class="text-[10px] text-slate-400">내과</p>
                 </div>
+                <div class="col-span-3 text-center text-amber-400 font-bold">25분</div>
+                <div class="col-span-3 text-right text-slate-300">1.2km</div>
+            </div>
+        </button>
+
+        <button onclick="openHospitalDetail({
+            name:'연세세브란스의원',
+            dept:'내과',
+            wait:'10분 이내',
+            distance:'0.6km',
+            address:'서울 서대문구 연세로 50',
+            phone:'02-2228-5800'
+        })"
+        class="w-full bg-slate-800 hover:bg-slate-700 rounded-2xl px-4 py-4 transition">
+            <div class="grid grid-cols-12 items-center text-sm">
+                <div class="col-span-6">
+                    <p class="font-bold">연세세브란스의원</p>
+                    <p class="text-[10px] text-slate-400">내과</p>
+                </div>
+                <div class="col-span-3 text-center text-emerald-400 font-bold">10분</div>
+                <div class="col-span-3 text-right text-slate-300">0.6km</div>
+            </div>
+        </button>
+
+    </div>
+</div>
+
+<!-- 병원 상세 정보 패널 (처음엔 숨김) -->
+<div id="panel-hospital-detail"
+     class="hidden bg-slate-900 rounded-[32px] p-8 text-white sticky top-24 shadow-2xl shadow-slate-300">
+
+    <!-- Header -->
+    <div class="flex items-center gap-3 mb-6">
+        <button onclick="backToList()"
+                class="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <h2 class="text-lg font-bold">병원 상세 정보</h2>
+    </div>
+
+    <!-- Content -->
+    <div class="space-y-6">
+        <div>
+            <p id="detail-name" class="text-2xl font-bold mb-1"></p>
+            <p id="detail-dept" class="text-sm text-slate-400"></p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-3">
+            <div class="bg-slate-800 p-4 rounded-2xl text-center">
+                <p class="text-xs text-slate-400 mb-1">예상 대기</p>
+                <p id="detail-wait" class="font-bold text-amber-400"></p>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-2xl text-center">
+                <p class="text-xs text-slate-400 mb-1">거리</p>
+                <p id="detail-distance" class="font-bold"></p>
+            </div>
+            <div class="bg-slate-800 p-4 rounded-2xl text-center">
+                <p class="text-xs text-slate-400 mb-1">상태</p>
+                <p class="font-bold text-emerald-400">진료 중</p>
+            </div>
+        </div>
+
+        <div class="bg-slate-800 p-5 rounded-2xl space-y-2">
+            <p class="text-xs text-slate-400">주소</p>
+            <p id="detail-address" class="text-sm"></p>
+            <p class="text-xs text-slate-400 mt-3">전화번호</p>
+            <p id="detail-phone" class="text-sm"></p>
+        </div>
+
+        <button class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 rounded-2xl font-bold transition">
+            진료 예약하기
+        </button>
+    </div>
+</div>
+
 
                 <div id="panel-hospital-review" class="hidden bg-slate-900 rounded-[32px] p-8 text-white sticky top-24 shadow-2xl shadow-slate-300 transition-all duration-300 border border-slate-700">
                     <button onclick="closeReviewPanel()" class="flex items-center gap-2 text-xs font-bold text-indigo-400 hover:text-indigo-300 mb-6 transition">
@@ -470,6 +530,32 @@
         }
 
         window.onload = initMap;
+
+
+
+
+
+        
+    function openHospitalDetail(hospital) {
+        document.getElementById('panel-hospital-list').classList.add('hidden');
+        document.getElementById('panel-hospital-detail').classList.remove('hidden');
+
+        document.getElementById('detail-name').innerText = hospital.name;
+        document.getElementById('detail-dept').innerText = hospital.dept;
+        document.getElementById('detail-wait').innerText = hospital.wait;
+        document.getElementById('detail-distance').innerText = hospital.distance;
+        document.getElementById('detail-address').innerText = hospital.address;
+        document.getElementById('detail-phone').innerText = hospital.phone;
+    }
+
+    function backToList() {
+        document.getElementById('panel-hospital-detail').classList.add('hidden');
+        document.getElementById('panel-hospital-list').classList.remove('hidden');
+    }
+
+
+
+
     </script>
 </body>
 </html>
