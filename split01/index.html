@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MediQ - 내 주변 병원 찾기</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
-    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=3530a02645473f578328de17f0aa2a57&libraries=services"></script>
-
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=c407f5265db4c0fecda71e5e0376f2f1&libraries=services"></script>
+    
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap');
+        /* @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap'); */
         body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; }
         .glass-nav { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0, 0, 0, 0.05); }
         .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
@@ -34,6 +36,20 @@
         @keyframes pulse-blue { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
         .fade-in { animation: fadeInCard 0.3s ease-in-out; }
         @keyframes fadeInCard { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 정보창 스타일 */
+        .info-bubble {
+            position: absolute; bottom: 45px; left: 50%; transform: translateX(-50%);
+            background: white; padding: 6px 12px; border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            white-space: nowrap; display: flex; gap: 8px; align-items: center;
+            font-size: 11px; font-weight: 700; color: #1e293b; border: 1px solid rgba(0,0,0,0.05); z-index: 20;
+        }
+        .info-bubble::after {
+            content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+            border-width: 6px 6px 0; border-style: solid; border-color: white transparent transparent transparent;
+        }
+        .overlay-group { position: relative; width: 0; height: 0; }
     </style>
 </head>
 <body class="text-slate-900">
@@ -47,7 +63,7 @@
         
         <div class="hidden md:flex gap-10 text-[14px] font-medium text-slate-500">
             <a href="#nearby-list" class="font-bold text-slate-900">내 주변 병원</a>
-            <a href="#nearby-list2" class="font-bold text-slate-900">나의 예약</a>
+            <a href="#nearby-list2" class="font-bold text-slate-900">나의 예약 리포트</a>
             <a href="#nearby-list3" class="font-bold text-slate-900">내 주변 약국</a>
         </div>
 
@@ -90,12 +106,18 @@
                     <div class="w-10 h-10 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center mr-4 group-hover:bg-rose-100 transition">
                         <i class="fa-solid fa-head-side-virus"></i>
                     </div>
-                    <div class="flex flex-col w-full">
+                    <!-- <div class="flex flex-col w-full">
                         <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">증상</span>
                         <input type="text" placeholder="예: 고열, 복통" class="bg-transparent w-full outline-none text-slate-900 font-bold text-sm md:text-base placeholder:text-slate-300">
+                    </div> -->
+
+                    <div class="flex flex-col w-full">
+                        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mb-0.5">증상/병원명</span>
+                        <input id="search-keyword" type="text" placeholder="병원명 검색 (예: 세브란스)" class="bg-transparent w-full outline-none text-slate-900 font-bold text-sm md:text-base placeholder:text-slate-300">
                     </div>
                 </div>
-                <button class="bg-slate-900 text-white font-bold w-full lg:w-auto px-8 py-4 rounded-[24px] hover:bg-indigo-600 transition shadow-lg flex items-center justify-center gap-2">
+
+                <button onclick="searchHospitals()" class="bg-slate-900 text-white font-bold w-full lg:w-auto px-8 py-4 rounded-[24px] hover:bg-indigo-600 transition shadow-lg flex items-center justify-center gap-2">
                     <i class="fa-solid fa-magnifying-glass"></i> <span class="lg:hidden">검색하기</span>
                 </button>
             </div>
@@ -172,8 +194,8 @@
                     </div>
                 </div>
 
-                <div class="mb-12">
-                    <h2 class="text-xl font-bold text-slate-900 mb-6">나의 예약 리포트</h2>
+                <div id="nearby-list2" class="mb-12 scroll-mt-24">
+                    <h2 class="text-xl font-bold text-slate-900 mb-6">나의 예약</h2>
                     <div class="bg-slate-50 border-2 border-dashed border-slate-200 rounded-[32px] p-12 text-center">
                         <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-sm text-slate-300">
                             <i class="fa-solid fa-lock text-2xl"></i>
@@ -183,12 +205,6 @@
                         <a href="login.html" class="inline-block bg-white text-slate-900 px-8 py-3 rounded-2xl text-sm font-bold shadow-sm border border-slate-200 hover:bg-slate-100 hover:shadow-md transition">로그인하기</a>
                     </div>
                 </div>
-
-                
-                
-                
-
-
 
 
 
@@ -294,114 +310,114 @@
             <div class="lg:col-span-4">
                 
                 <!-- 병원 목록 패널 -->
-<div id="panel-hospital-list"
-     class="bg-slate-900 rounded-[32px] p-8 text-white sticky top-24 shadow-2xl shadow-slate-300">
+                <div id="panel-hospital-list"
+                    class="bg-slate-900 rounded-[32px] p-8 text-white sticky top-24 shadow-2xl shadow-slate-300">
 
-    <div class="flex items-center justify-between mb-8">
-        <div class="flex items-center gap-2">
-            <i class="fa-solid fa-hospital text-indigo-400"></i>
-            <h2 class="text-lg font-bold">주변 병원 목록</h2>
-        </div>
-    </div>
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-hospital text-indigo-400"></i>
+                            <h2 class="text-lg font-bold">주변 병원 목록</h2>
+                        </div>
+                    </div>
 
-    <!-- Column Header -->
-    <div class="grid grid-cols-12 text-[10px] text-slate-400 font-bold uppercase mb-3 px-2">
-        <div class="col-span-6">병원명</div>
-        <div class="col-span-3 text-center">예상 대기</div>
-        <div class="col-span-3 text-right">거리</div>
-    </div>
+                    <!-- Column Header -->
+                    <div class="grid grid-cols-12 text-[10px] text-slate-400 font-bold uppercase mb-3 px-2">
+                        <div class="col-span-6">병원명</div>
+                        <div class="col-span-3 text-center">예상 대기</div>
+                        <div class="col-span-3 text-right">거리</div>
+                    </div>
 
-    <!-- Hospital List -->
-    <div class="space-y-3">
+                    <!-- Hospital List -->
+                    <div class="space-y-3">
 
-        <button onclick="openHospitalDetail({
-            name:'서울대학교병원',
-            dept:'내과',
-            wait:'약 25분',
-            distance:'1.2km',
-            address:'서울 종로구 대학로 101',
-            phone:'02-2072-2114'
-        })"
-        class="w-full bg-slate-800 hover:bg-slate-700 rounded-2xl px-4 py-4 transition">
-            <div class="grid grid-cols-12 items-center text-sm">
-                <div class="col-span-6">
-                    <p class="font-bold">서울대학교병원</p>
-                    <p class="text-[10px] text-slate-400">내과</p>
+                        <button onclick="openHospitalDetail({
+                            name:'서울대학교병원',
+                            dept:'내과',
+                            wait:'약 25분',
+                            distance:'1.2km',
+                            address:'서울 종로구 대학로 101',
+                            phone:'02-2072-2114'
+                        })"
+                        class="w-full bg-slate-800 hover:bg-slate-700 rounded-2xl px-4 py-4 transition">
+                            <div class="grid grid-cols-12 items-center text-sm">
+                                <div class="col-span-6">
+                                    <p class="font-bold">서울대학교병원</p>
+                                    <p class="text-[10px] text-slate-400">내과</p>
+                                </div>
+                                <div class="col-span-3 text-center text-amber-400 font-bold">25분</div>
+                                <div class="col-span-3 text-right text-slate-300">1.2km</div>
+                            </div>
+                        </button>
+
+                        <button onclick="openHospitalDetail({
+                            name:'연세세브란스의원',
+                            dept:'내과',
+                            wait:'10분 이내',
+                            distance:'0.6km',
+                            address:'서울 서대문구 연세로 50',
+                            phone:'02-2228-5800'
+                        })"
+                        class="w-full bg-slate-800 hover:bg-slate-700 rounded-2xl px-4 py-4 transition">
+                            <div class="grid grid-cols-12 items-center text-sm">
+                                <div class="col-span-6">
+                                    <p class="font-bold">연세세브란스의원</p>
+                                    <p class="text-[10px] text-slate-400">내과</p>
+                                </div>
+                                <div class="col-span-3 text-center text-emerald-400 font-bold">10분</div>
+                                <div class="col-span-3 text-right text-slate-300">0.6km</div>
+                            </div>
+                        </button>
+
+                    </div>
                 </div>
-                <div class="col-span-3 text-center text-amber-400 font-bold">25분</div>
-                <div class="col-span-3 text-right text-slate-300">1.2km</div>
-            </div>
-        </button>
 
-        <button onclick="openHospitalDetail({
-            name:'연세세브란스의원',
-            dept:'내과',
-            wait:'10분 이내',
-            distance:'0.6km',
-            address:'서울 서대문구 연세로 50',
-            phone:'02-2228-5800'
-        })"
-        class="w-full bg-slate-800 hover:bg-slate-700 rounded-2xl px-4 py-4 transition">
-            <div class="grid grid-cols-12 items-center text-sm">
-                <div class="col-span-6">
-                    <p class="font-bold">연세세브란스의원</p>
-                    <p class="text-[10px] text-slate-400">내과</p>
+                <!-- 병원 상세 정보 패널 (처음엔 숨김) -->
+                <div id="panel-hospital-detail"
+                    class="hidden bg-slate-900 rounded-[32px] p-8 text-white sticky top-24 shadow-2xl shadow-slate-300">
+
+                    <!-- Header -->
+                    <div class="flex items-center gap-3 mb-6">
+                        <button onclick="backToList()"
+                                class="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <h2 class="text-lg font-bold">병원 상세 정보</h2>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="space-y-6">
+                        <div>
+                            <p id="detail-name" class="text-2xl font-bold mb-1"></p>
+                            <p id="detail-dept" class="text-sm text-slate-400"></p>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3">
+                            <div class="bg-slate-800 p-4 rounded-2xl text-center">
+                                <p class="text-xs text-slate-400 mb-1">예상 대기</p>
+                                <p id="detail-wait" class="font-bold text-amber-400"></p>
+                            </div>
+                            <div class="bg-slate-800 p-4 rounded-2xl text-center">
+                                <p class="text-xs text-slate-400 mb-1">거리</p>
+                                <p id="detail-distance" class="font-bold"></p>
+                            </div>
+                            <div class="bg-slate-800 p-4 rounded-2xl text-center">
+                                <p class="text-xs text-slate-400 mb-1">상태</p>
+                                <p class="font-bold text-emerald-400">진료 중</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-slate-800 p-5 rounded-2xl space-y-2">
+                            <p class="text-xs text-slate-400">주소</p>
+                            <p id="detail-address" class="text-sm"></p>
+                            <p class="text-xs text-slate-400 mt-3">전화번호</p>
+                            <p id="detail-phone" class="text-sm"></p>
+                        </div>
+
+                        <button class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 rounded-2xl font-bold transition">
+                            진료 예약하기
+                        </button>
+                    </div>
                 </div>
-                <div class="col-span-3 text-center text-emerald-400 font-bold">10분</div>
-                <div class="col-span-3 text-right text-slate-300">0.6km</div>
-            </div>
-        </button>
-
-    </div>
-</div>
-
-<!-- 병원 상세 정보 패널 (처음엔 숨김) -->
-<div id="panel-hospital-detail"
-     class="hidden bg-slate-900 rounded-[32px] p-8 text-white sticky top-24 shadow-2xl shadow-slate-300">
-
-    <!-- Header -->
-    <div class="flex items-center gap-3 mb-6">
-        <button onclick="backToList()"
-                class="w-10 h-10 rounded-full bg-slate-800 hover:bg-slate-700 flex items-center justify-center">
-            <i class="fa-solid fa-arrow-left"></i>
-        </button>
-        <h2 class="text-lg font-bold">병원 상세 정보</h2>
-    </div>
-
-    <!-- Content -->
-    <div class="space-y-6">
-        <div>
-            <p id="detail-name" class="text-2xl font-bold mb-1"></p>
-            <p id="detail-dept" class="text-sm text-slate-400"></p>
-        </div>
-
-        <div class="grid grid-cols-3 gap-3">
-            <div class="bg-slate-800 p-4 rounded-2xl text-center">
-                <p class="text-xs text-slate-400 mb-1">예상 대기</p>
-                <p id="detail-wait" class="font-bold text-amber-400"></p>
-            </div>
-            <div class="bg-slate-800 p-4 rounded-2xl text-center">
-                <p class="text-xs text-slate-400 mb-1">거리</p>
-                <p id="detail-distance" class="font-bold"></p>
-            </div>
-            <div class="bg-slate-800 p-4 rounded-2xl text-center">
-                <p class="text-xs text-slate-400 mb-1">상태</p>
-                <p class="font-bold text-emerald-400">진료 중</p>
-            </div>
-        </div>
-
-        <div class="bg-slate-800 p-5 rounded-2xl space-y-2">
-            <p class="text-xs text-slate-400">주소</p>
-            <p id="detail-address" class="text-sm"></p>
-            <p class="text-xs text-slate-400 mt-3">전화번호</p>
-            <p id="detail-phone" class="text-sm"></p>
-        </div>
-
-        <button class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 rounded-2xl font-bold transition">
-            진료 예약하기
-        </button>
-    </div>
-</div>
 
 
                 <div id="panel-hospital-review" class="hidden bg-slate-900 rounded-[32px] p-8 text-white sticky top-24 shadow-2xl shadow-slate-300 transition-all duration-300 border border-slate-700">
@@ -487,50 +503,15 @@
             let lastLat = 0;
             let lastLng = 0;
 
+            let overlayList = []; // 지도에 찍힌 마커들 관리통
+            let ps; // 장소 검색 객체 (Places Service)
+
             // 카카오맵은 좌표 순서가 (위도, 경도) 입니다.
             const DEFAULT_LAT = 37.5598;
             const DEFAULT_LNG = 126.9425;
 
-            // 병원 데이터 (기존 데이터 유지)
-            const hospitalData = [
-                { 
-                    name: "세브란스 병원", 
-                    lat: 37.5623, lng: 126.9366, 
-                    color: "#10b981", icon: "fa-solid fa-hospital", 
-                    status: "진료 원활",
-                    distance: "350m", 
-                    waitTime: "12",
-                    waitCount: "5명", 
-                    beds: "45석",      
-                    parking: "여유",   
-                    specialist: "상주함" 
-                },
-                { 
-                    name: "아이사랑 소아과", 
-                    lat: 37.5640, lng: 126.9400, 
-                    color: "#f59e0b", icon: "fa-solid fa-child-reaching", 
-                    status: "보통",
-                    distance: "800m", 
-                    waitTime: "45",
-                    waitCount: "12명",
-                    beds: "5석",
-                    parking: "협소",
-                    specialist: "진료중"
-                },
-                { 
-                    name: "신촌 응급의료센터", 
-                    lat: 37.5580, lng: 126.9380, 
-                    color: "#f43f5e", icon: "fa-solid fa-truck-medical", 
-                    status: "매우 혼잡",
-                    distance: "1.2km", 
-                    waitTime: "120",
-                    waitCount: "35명",
-                    beds: "만석",
-                    parking: "만차",
-                    specialist: "수술중"
-                }
-            ];
-
+            
+            // 상태별 색상
             function getColorByStatus(status) {
                 if (status.includes("원활")) return "#10b981"; 
                 if (status.includes("보통")) return "#f59e0b"; 
@@ -552,83 +533,34 @@
                 return d * 1000; 
             }
 
-            // 1. 페이지 로드 시 가장 먼저 실행되는 함수
-           
+
             window.onload = function() {
-            // 처음 켤 때만 내 위치로 중심 잡고 시작
+                // 장소 검색 객체 생성 (★ 필수)
+                ps = new kakao.maps.services.Places();
+
                 if (navigator.geolocation) {
                     var options = { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 };
                     navigator.geolocation.getCurrentPosition(
                         function(position) { 
-                            // 최초 1회는 지도 중심 이동 (true 전달)
+                            // 성공: 내 위치로 지도 그리고 -> 주변 병원 자동 검색
                             initMap(position.coords.latitude, position.coords.longitude);
-                            startTracking(); // 추적 시작
+                            startTracking(); 
+                            searchHospitals('병원'); // ★ 켜자마자 주변 병원 검색
                         }, 
                         function(error) { 
                             initMap(DEFAULT_LAT, DEFAULT_LNG);
                             startTracking();
+                            searchHospitals('병원'); // 실패해도 기본위치 주변 검색
                         }, 
                         options
                     );
                 } else {
                     initMap(DEFAULT_LAT, DEFAULT_LNG);
+                    searchHospitals('병원');
                 }
             };
 
-        function startTracking() {
-            if (navigator.geolocation) {
-                var options = { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 };
-                watchId = navigator.geolocation.watchPosition(
-                    function(position) {
-                        var newLat = position.coords.latitude;
-                        var newLng = position.coords.longitude;
-                        
-                        // 1m 미만 미세 이동은 무시 (떨림 방지)
-                        if (lastLat !== 0) {
-                            var dist = getDistanceFromLatLon(lastLat, lastLng, newLat, newLng);
-                            if (dist < 1) return; 
-                        }
-
-                        lastLat = newLat;
-                        lastLng = newLng;
-                        
-                        // ★ 핵심 변경: 여기서는 마커만 옮기고 지도는 안 옮깁니다!
-                        updateMarkerPosition(newLat, newLng); 
-                    }, 
-                    function(error) { console.error("위치 추적 실패"); }, 
-                    options
-                );
-            }
-        }
-
-        // 3. 통합 업데이트 함수 (shouldPanMap: 지도를 움직일지 말지 결정)
-        function updateUserLocation(lat, lng, shouldPanMap) {
-            var locPosition = new kakao.maps.LatLng(lat, lng);
-            
-            // 1. 파란 점(마커) 위치 업데이트
-            if (myLocationOverlay) {
-                myLocationOverlay.setPosition(locPosition);
-            } else {
-                createMyLocationMarker(locPosition);
-            }
-
-            // 2. 지도 중심 이동은 shouldPanMap이 true일 때만!
-            if (shouldPanMap) {
-                map.panTo(locPosition);
-            }
-        }
-
-        function createMyLocationMarker(position) {
-            var myContent = document.createElement('div');
-            myContent.className = 'my-location-pulse';
-            
-            myLocationOverlay = new kakao.maps.CustomOverlay({
-                map: map,
-                position: position,
-                content: myContent,
-                yAnchor: 1 
-            });
-        }
+        
 
         // 초기화 함수
         function initMap(lat, lng) {
@@ -644,8 +576,111 @@
             // 최초 내 위치 마커 생성 (있다면)
             createMyLocationMarker(centerPosition);
 
-            // 병원 마커들 생성
-            hospitalData.forEach(h => {
+            // (추가) 지도를 움직이고 멈추면(dragend) 자동으로 재검색!
+            kakao.maps.event.addListener(map, 'dragend', function() {
+                // 1. 현재 검색창에 있는 단어 가져오기
+                var keyword = document.getElementById('search-keyword').value;
+                // 2. 검색어가 없으면 기본값 '병원'으로, 있으면 그 단어로 재검색
+                searchHospitals(keyword || '병원');
+            });
+
+            // (추가) 줌 레벨이 바뀌어도(zoom_changed) 자동으로 재검색
+            kakao.maps.event.addListener(map, 'zoom_changed', function() {
+                var keyword = document.getElementById('search-keyword').value;
+                searchHospitals(keyword || '병원');
+            });
+
+        }
+
+
+        // ★★★ [핵심 1] 카카오 API로 장소 검색하기 ★★★
+        function searchHospitals(initialKeyword) {
+            // 입력창 값이 있으면 그걸 쓰고, 없으면 인자값(초기 '병원') 사용
+            var inputElement = document.getElementById('search-keyword');
+            var inputKeyword = inputElement ? inputElement.value : '';
+            var keyword = inputKeyword || initialKeyword || '병원';
+
+            if (!keyword.replace(/^\s+|\s+$/g, '')) {
+                alert('키워드를 입력해주세요!');
+                return;
+            }
+
+            // 현재 지도 중심 좌표를 기준으로 검색 (내 주변 검색 효과)
+            var options = {
+                location: map.getCenter(),
+                radius: 2000, // 반경 2km 검색
+                sort: kakao.maps.services.SortBy.DISTANCE // 거리순 정렬
+            };
+
+            // 카카오에게 "이 키워드로 찾아줘" 명령
+            ps.keywordSearch(keyword, placesSearchCB, options);
+        }
+
+        // ★★★ [핵심 2] 검색 결과 받아서 처리하기 (Callback) ★★★
+        function placesSearchCB(data, status, pagination) {
+            if (status === kakao.maps.services.Status.OK) {
+                
+                // 기존 마커들 싹 지우기
+                removeMarker();
+
+                // 검색된 데이터(data)는 깡통 정보(이름, 주소)뿐임.
+                // 여기에 우리가 원하는 '가짜 의료 정보'를 섞어서 새 리스트를 만듦.
+                var enrichedData = data.map(place => {
+                    return generateRandomHospitalData(place);
+                });
+
+                // 마커 찍기 함수 호출
+                displayMarkers(enrichedData);
+
+            } else if (status === kakao.maps.services.Status.ZERO_RESULT) {
+                alert('검색 결과가 존재하지 않습니다.');
+                return;
+            } else if (status === kakao.maps.services.Status.ERROR) {
+                alert('검색 결과 중 오류가 발생했습니다.');
+                return;
+            }
+        }
+
+        // ★★★ [핵심 3] 실제 병원 정보에 '가짜 데이터' 섞는 함수 ★★★
+        function generateRandomHospitalData(place) {
+            // 랜덤 상태 생성 (원활/보통/혼잡)
+            const states = ["진료 원활", "보통", "매우 혼잡"];
+            const randomState = states[Math.floor(Math.random() * states.length)];
+            
+            // 상태에 따른 대기시간/인원 조작
+            let waitTime, waitCount;
+            if(randomState === "진료 원활") {
+                waitCount = Math.floor(Math.random() * 5) + 1; // 1~5명
+                waitTime = waitCount * 3; // 3분씩
+            } else if (randomState === "보통") {
+                waitCount = Math.floor(Math.random() * 10) + 5; // 5~15명
+                waitTime = waitCount * 4;
+            } else {
+                waitCount = Math.floor(Math.random() * 20) + 15; // 15~35명
+                waitTime = waitCount * 5;
+            }
+
+            return {
+                name: place.place_name,                 // 카카오 데이터
+                lat: place.y,                           // 카카오 데이터
+                lng: place.x,                           // 카카오 데이터
+                address: place.road_address_name || place.address_name, // 카카오 데이터
+                phone: place.phone || "02-0000-0000",   // 카카오 데이터 (없으면 가짜)
+                distance: place.distance + "m",         // 카카오 데이터 (거리)
+                
+                // --- 아래는 우리가 만든 가짜 데이터 ---
+                status: randomState,
+                waitTime: waitTime,
+                waitCount: waitCount + "명",
+                beds: Math.floor(Math.random() * 10) + "석",
+                parking: Math.random() > 0.5 ? "여유" : "만차",
+                specialist: Math.random() > 0.3 ? "진료중" : "휴진"
+            };
+        }
+
+        // 마커 찍기 (enrichedData를 받아서 그림)
+        function displayMarkers(data) {
+            data.forEach(h => {
                 var position = new kakao.maps.LatLng(h.lat, h.lng);
                 var color = getColorByStatus(h.status);
 
@@ -660,20 +695,71 @@
                     </div>
                     <div class="custom-div-icon">
                         <div style="background-color:${color};" class="marker-pin"></div>
-                        <i class="${h.icon} marker-icon" style="color:${color}; filter: brightness(0.7);"></i>
+                        <i class="fa-solid fa-hospital marker-icon" style="color:${color}; filter: brightness(0.7);"></i>
                     </div>
                 `;
                 
                 contentDiv.onclick = function() { showHospitalCard(h); };
 
-                new kakao.maps.CustomOverlay({
+                var overlay = new kakao.maps.CustomOverlay({
                     map: map,
                     position: position,
                     content: contentDiv,
                     yAnchor: 1 
                 });
+                
+                // 배열에 저장 (나중에 지우기 위함)
+                overlayList.push(overlay);
             });
         }
+
+        // 지도 위 마커 싹 지우기
+        function removeMarker() {
+            for (var i = 0; i < overlayList.length; i++) {
+                overlayList[i].setMap(null);
+            }
+            overlayList = [];
+        }
+
+        // --- 기타 기능 (위치 추적 등) ---
+        function startTracking() {
+            if (navigator.geolocation) {
+                var options = { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 };
+                watchId = navigator.geolocation.watchPosition(
+                    function(position) {
+                        var newLat = position.coords.latitude;
+                        var newLng = position.coords.longitude;
+                        if (lastLat !== 0) {
+                            var dist = getDistanceFromLatLon(lastLat, lastLng, newLat, newLng);
+                            if (dist < 2) return; 
+                        }
+                        lastLat = newLat; lastLng = newLng;
+                        updateUserLocation(newLat, newLng, false); 
+                    }, 
+                    function(error) { console.error("추적 실패"); }, 
+                    options
+                );
+            }
+        }
+
+        function updateUserLocation(lat, lng, shouldPanMap) {
+            var locPosition = new kakao.maps.LatLng(lat, lng);
+            if (myLocationOverlay) {
+                myLocationOverlay.setPosition(locPosition);
+            } else {
+                createMyLocationMarker(locPosition);
+            }
+            if (shouldPanMap) map.panTo(locPosition);
+        }
+
+        function createMyLocationMarker(position) {
+            var myContent = document.createElement('div');
+            myContent.className = 'my-location-pulse';
+            myLocationOverlay = new kakao.maps.CustomOverlay({
+                map: map, position: position, content: myContent, yAnchor: 1 
+            });
+        }
+
 
         // ★ 버튼 클릭용 함수: 이때만 강제로 지도 중심을 이동시킴
         function panToMyLocation() {
@@ -689,7 +775,9 @@
                     lastLng = lng;
 
                     // ★ 핵심: 버튼 눌렀을 때는 'true'를 보내서 지도를 강제로 이동시킴!
-                    updateUserLocation(lat, lng, true); 
+                    updateUserLocation(lat, lng, true);
+                    // 내 위치 기준으로 재검색 (선택사항)
+                    searchHospitals('병원');
 
                 }, function(error) {
                     alert("위치를 가져올 수 없습니다. GPS 설정을 확인해주세요.");
