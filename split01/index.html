@@ -151,7 +151,7 @@
                                     <p class="text-xs text-slate-500 mt-1" id="card-distance">거리</p>
                                 </div>
                                 <div class="bg-slate-100 p-2 rounded-xl text-center min-w-[60px]">
-                                    <p class="text-[10px] text-slate-400 font-bold">대기시간</p>
+                                    <p class="text-[10px] text-slate-400 font-bold">예상 대기 시간</p>
                                     <p class="text-lg font-bold text-slate-900" id="card-wait-time">0<span class="text-xs font-normal">분</span></p>
                                 </div>
                             </div>
@@ -215,7 +215,7 @@
     </h2>
     <div class="flex bg-slate-100 p-1 rounded-xl">
         <button class="px-4 py-1.5 bg-white rounded-lg text-xs font-bold shadow-sm transition">거리순</button>
-        <button class="px-4 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-600 transition">영업중</button>
+        <button class="px-4 py-1.5 text-xs font-bold text-slate-400 hover:text-slate-600 transition">영업 중</button>
     </div>
 </div>
 <div class="flex flex-col gap-3">
@@ -230,7 +230,7 @@
                                 <div>
                                     <div class="flex items-center gap-2 mb-1">
                                         <h3 class="text-lg font-bold text-slate-900">연세 365 약국</h3>
-                                        <span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-md border border-emerald-100">영업중</span>
+                                        <span class="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[10px] font-bold rounded-md border border-emerald-100">영업 중</span>
                                     </div>
                                     <p class="text-xs text-slate-400 font-medium">서울 서대문구 신촌로 123 · 150m</p>
                                 </div>
@@ -323,7 +323,7 @@
                     <!-- Column Header -->
                     <div class="grid grid-cols-12 text-[10px] text-slate-400 font-bold uppercase mb-3 px-2">
                         <div class="col-span-6">병원명</div>
-                        <div class="col-span-3 text-center">예상 대기</div>
+                        <div class="col-span-3 text-center">예상 대기 시간</div>
                         <div class="col-span-3 text-right">거리</div>
                     </div>
 
@@ -393,7 +393,7 @@
 
                         <div class="grid grid-cols-3 gap-3">
                             <div class="bg-slate-800 p-4 rounded-2xl text-center">
-                                <p class="text-xs text-slate-400 mb-1">예상 대기</p>
+                                <p class="text-xs text-slate-400 mb-1">예상 대기 시간</p>
                                 <p id="detail-wait" class="font-bold text-amber-400"></p>
                             </div>
                             <div class="bg-slate-800 p-4 rounded-2xl text-center">
@@ -422,7 +422,7 @@
 
                 <div id="panel-hospital-review" class="hidden bg-slate-900 rounded-[32px] p-8 text-white sticky top-24 shadow-2xl shadow-slate-300 transition-all duration-300 border border-slate-700">
                     <button onclick="closeReviewPanel()" class="flex items-center gap-2 text-xs font-bold text-indigo-400 hover:text-indigo-300 mb-6 transition">
-                        <i class="fa-solid fa-arrow-left"></i> 건강 예보로 돌아가기
+                        <i class="fa-solid fa-arrow-left"></i> 목록으로 돌아가기
                     </button>
 
                     <div class="mb-8">
@@ -647,7 +647,7 @@
             const states = ["진료 원활", "보통", "매우 혼잡"];
             const randomState = states[Math.floor(Math.random() * states.length)];
             
-            // 상태에 따른 대기시간/인원 조작
+            // 상태에 따른 대기 시간/인원 조작
             let waitTime, waitCount;
             if(randomState === "진료 원활") {
                 waitCount = Math.floor(Math.random() * 5) + 1; // 1~5명
