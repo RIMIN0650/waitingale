@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -592,15 +593,64 @@
 
         }
 
+        // ★★★ [NEW] 증상을 입력하면 진료과를 추천해주는 함수 (AI 흉내) ★★★
+        function getDepartmentBySymptom(inputText) {
+            // 1. 증상 키워드 사전 (여기에 계속 추가하면 더 똑똑해집니다)
+            const symptomDB = [
+                { keywords: ["배", "복통", "설사", "구토", "소화", "위염", "체했", "속쓰림"], dept: "내과" },
+                { keywords: ["이", "치통", "잇몸", "사랑니", "임플란트", "스케일링"], dept: "치과" },
+                { keywords: ["뼈", "골절", "허리", "디스크", "관절", "손목", "발목", "물리치료"], dept: "정형외과" },
+                { keywords: ["코", "목", "귀", "감기", "비염", "축농증", "중이염"], dept: "이비인후과" },
+                { keywords: ["눈", "시력", "결막염", "다래끼", "라식"], dept: "안과" },
+                { keywords: ["피부", "여드름", "점", "화상", "두드러기", "아토피"], dept: "피부과" },
+                { keywords: ["아이", "아기", "신생아", "유아", "접종"], dept: "소아청소년과" },
+                { keywords: ["우울", "불면", "스트레스", "공황"], dept: "정신건강의학과" },
+                { keywords: ["수술", "맹장", "치질", "화상"], dept: "외과" }
+            ];
+
+            // 2. 입력된 문장(inputText)에 키워드가 있는지 확인
+            for (let item of symptomDB) {
+                for (let key of item.keywords) {
+                    if (inputText.includes(key)) {
+                        // 키워드를 발견하면 해당 진료과 리턴
+                        return item.dept; 
+                    }
+                }
+            }
+
+            // 3. 맞는 키워드가 없으면 그냥 원래 입력값 그대로 씀 (혹은 '병원')
+            return inputText; 
+        }
 
         // ★★★ [핵심 1] 카카오 API로 장소 검색하기 ★★★
         function searchHospitals(initialKeyword) {
-            // 입력창 값이 있으면 그걸 쓰고, 없으면 인자값(초기 '병원') 사용
             var inputElement = document.getElementById('search-keyword');
-            var inputKeyword = inputElement ? inputElement.value : '';
-            var keyword = inputKeyword || initialKeyword || '병원';
+            var userInput = inputElement ? inputElement.value : '';
 
-            if (!keyword.replace(/^\s+|\s+$/g, '')) {
+            // 최종적으로 검색할 단어 변수
+            var finalKeyword = '';
+            
+            // 1. 사용자가 아무것도 안 썼으면 -> 초기값(예: '병원') 사용
+            if (!userInput && initialKeyword) {
+                searchKeyword = initialKeyword;
+            } 
+            // 2. 사용자가 무언가 썼으면 -> 증상 분석기로 돌려봄!
+            else if (userInput) {
+                // 예: "배 아파" 입력 -> getDepartmentBySymptom이 "내과"로 바꿔줌
+                var convertedKeyword = getDepartmentBySymptom(userInput);
+                
+               // 만약 변환된 단어가 원래 단어랑 다르면 (즉, 증상을 발견했으면)
+                if (convertedKeyword !== userInput) {
+                    // ★ [핵심 수정] 알림창은 띄우되, 검색창 값을 아예 '진료과'로 바꿔버림!
+                    // 이렇게 하면 다음에 자동 검색될 때 또 변환하지 않음 (무한루프 방지)
+                    inputElement.value = convertedKeyword; 
+                    
+                    alert(`"${userInput}" 증상에 맞는 [${convertedKeyword}]를 검색합니다.`); 
+                    finalKeyword = convertedKeyword;
+                } else {
+                    finalKeyword = userInput; // 변환 안 됐으면 그대로 검색
+                }
+            } else {
                 alert('키워드를 입력해주세요!');
                 return;
             }
@@ -613,7 +663,7 @@
             };
 
             // 카카오에게 "이 키워드로 찾아줘" 명령
-            ps.keywordSearch(keyword, placesSearchCB, options);
+            ps.keywordSearch(finalKeyword, placesSearchCB, options);
         }
 
         // ★★★ [핵심 2] 검색 결과 받아서 처리하기 (Callback) ★★★
@@ -647,6 +697,17 @@
             const states = ["진료 원활", "보통", "매우 혼잡"];
             const randomState = states[Math.floor(Math.random() * states.length)];
             
+            let categoryName = place.category_name.split(' > ').pop();
+            // 2. 만약 '종합병원'이나 그냥 '병원'이면 그럴듯하게 진료과목을 여러 개 나열해줌 (랜덤 트릭)
+            let detailDept = categoryName;
+            if (categoryName.includes("종합") || categoryName === "병원") {
+                detailDept = "내과, 정형외과, 소아과, 이비인후과, 응급의학과";
+            } else {
+                // '내과'라면 -> '소화기내과, 순환기내과' 처럼 좀 더 있어보이게 꾸미기 가능(선택사항)
+                // 지금은 그냥 카카오가 준 그대로 씀
+            }
+
+
             // 상태에 따른 대기 시간/인원 조작
             let waitTime, waitCount;
             if(randomState === "진료 원활") {
@@ -674,7 +735,10 @@
                 waitCount: waitCount + "명",
                 beds: Math.floor(Math.random() * 10) + "석",
                 parking: Math.random() > 0.5 ? "여유" : "만차",
-                specialist: Math.random() > 0.3 ? "진료중" : "휴진"
+                specialist: Math.random() > 0.3 ? "진료중" : "휴진",
+
+                // ★ 여기에 진료 과목 데이터 추가!
+                dept: detailDept
             };
         }
 
@@ -792,9 +856,15 @@
             
             const color = getColorByStatus(data.status);
             document.getElementById('card-name').textContent = data.name;
-            document.getElementById('card-distance').textContent = `내 위치로부터 ${data.distance}`;
-            document.getElementById('card-wait-time').innerHTML = `${data.waitTime}<span class="text-xs font-normal">분</span>`;
             
+            // ★ [추가] 거리 옆에 진료 과목 표시하기 (HTML 태그로 예쁘게)
+            // 기존: "내 위치로부터 300m"
+            // 변경: "내과 | 300m" 
+            document.getElementById('card-distance').innerHTML = 
+                `<span class="text-indigo-600 font-bold">${data.dept}</span> <span class="text-slate-300 mx-1">|</span> ${data.distance}`;
+
+            document.getElementById('card-wait-time').innerHTML = `${data.waitTime}<span class="text-xs font-normal">분</span>`;
+
             const statusText = document.getElementById('card-status-text');
             statusText.textContent = data.status;
             statusText.style.color = color;
