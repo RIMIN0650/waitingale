@@ -1,4 +1,4 @@
-
+/* 
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -52,10 +52,10 @@ pw_find.html
 * {
     box-sizing: border-box;
     font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
-}
+} 
 
 .footer {
-
+*/
 * {
     box-sizing: border-box;
     font-family: "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
@@ -140,3 +140,6 @@ pw_find.html
     max-width: 900px;
     line-height: 1.6;
 }
+
+
+
