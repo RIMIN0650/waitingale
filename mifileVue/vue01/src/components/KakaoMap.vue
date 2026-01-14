@@ -59,6 +59,7 @@
     <div class="sheet absolute left-0 right-0 bottom-0 md:left-auto md:right-6 md:bottom-6 md:w-96 z-[60]"
          :class="{ open: selectedCard }">
       <div class="glass-strong md:rounded-[28px] rounded-t-[28px] p-5 md:p-6 relative shadow-2xl">
+        
         <div class="md:hidden mx-auto mb-3 w-12 h-1.5 rounded-full bg-slate-200"></div>
 
         <button @click="selectedCard = null" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
@@ -68,7 +69,8 @@
         <div v-if="selectedCard" class="fade-in">
           <div class="flex justify-between items-start mb-4 pr-8">
             <div class="min-w-0">
-              <p class="text-[10px] font-black uppercase tracking-wider mb-1" :style="{ color: getColorByStatus(selectedCard.status) }">
+              <p class="text-[10px] font-black uppercase tracking-wider mb-1" 
+                 :style="{ color: getColorByStatus(selectedCard.status) }">
                 {{ selectedCard.status }}
               </p>
               <h4 class="text-xl font-black text-slate-900 leading-tight truncate">{{ selectedCard.name }}</h4>
@@ -100,20 +102,22 @@
             <button @click="openKakaoWay(selectedCard)" class="w-full bg-[#FEE500] text-[#191919] py-3 rounded-2xl font-black hover:bg-yellow-400 flex items-center justify-center gap-2 text-sm">
               <i class="fa-solid fa-route"></i> 길찾기
             </button>
-            <button class="w-full bg-slate-900 text-white py-3 rounded-2xl font-black hover:bg-slate-800 flex items-center justify-center gap-2 text-sm">
-              <span>접수/예약</span> <i class="fa-solid fa-arrow-right text-xs"></i>
+            <button @click="goToIntake" 
+                    class="w-full bg-slate-900 text-white py-3 rounded-2xl font-black hover:bg-slate-800 flex items-center justify-center gap-2 text-sm">
+              <span>접수/ 예약</span> <i class="fa-solid fa-arrow-right text-xs"></i>
             </button>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
 <script setup>
 import { onMounted, ref, defineExpose, defineEmits } from 'vue';
 
-// === 상태 변수들 ===
+
 const mapContainer = ref(null);
 const map = ref(null);
 const ps = ref(null);
@@ -121,16 +125,18 @@ const isLoaded = ref(false);
 const overlayList = ref([]);
 const myLocationOverlay = ref(null);
 
-// 필터 관련 상태
+
+// 필터 상태
 const currentRadius = ref(1000);
 const filterOpenOnly = ref(false);
 const sortMode = ref('distance');
 const currentDept = ref('all');
 const depts = ['all', '내과', '이비인후과', '정형외과', '소아청소년과', '피부과', '치과'];
 
-// 데이터 관련
-const rawData = ref([]); // 검색된 원본 데이터
-const selectedCard = ref(null); // 현재 선택된 병원 (상세카드용)
+
+// 데이터 상태
+const rawData = ref([]); 
+const selectedCard = ref(null); // 이게 있어야 카드가 뜹니다!
 
 const emit = defineEmits(['update-hospitals']);
 
@@ -147,47 +153,86 @@ onMounted(() => {
 
   isLoaded.value = true;
   
-  // 초기 로딩 시 검색
   setTimeout(() => {
     map.value.relayout();
     searchPlaces('병원');
   }, 200);
 });
 
-// === 검색 로직 ===
+// === 증상 변환 함수 ===
+const getDepartmentBySymptom = (inputText) => {
+  const symptomDB = [
+    { keywords: ["배", "복통", "설사", "구토", "체했", "속쓰림"], dept: "내과" },
+    { keywords: ["이", "치통", "잇몸", "사랑니"], dept: "치과" },
+    { keywords: ["뼈", "골절", "허리", "디스크", "관절"], dept: "정형외과" },
+    { keywords: ["코", "목", "귀", "감기", "비염"], dept: "이비인후과" },
+    { keywords: ["눈", "시력", "다래끼"], dept: "안과" },
+    { keywords: ["피부", "여드름", "두드러기"], dept: "피부과" },
+    { keywords: ["아이", "아기", "접종"], dept: "소아청소년과" }
+  ];
+  for (let item of symptomDB) {
+    for (let key of item.keywords) {
+      if (inputText.includes(key)) return item.dept;
+    }
+  }
+  return inputText;
+};
+
+// === 검색 함수 ===
 const searchPlaces = (keyword) => {
   if (!ps.value) return;
-  // 1. 상세 카드 닫기
+
+  // 1. 상세카드 닫기
   selectedCard.value = null;
 
-  ps.value.keywordSearch(keyword, (data, status) => {
+  // 2. 증상 변환
+  let finalKeyword = keyword;
+  const converted = getDepartmentBySymptom(keyword);
+  if (converted !== keyword) {
+    alert(`"${keyword}" 증상에 맞는 [${converted}]를 검색합니다.`);
+    finalKeyword = converted;
+  }
+
+  // 3. 카카오 검색
+  ps.value.keywordSearch(finalKeyword, (data, status) => {
     if (status === window.kakao.maps.services.Status.OK) {
-      // 2. 데이터 가공 (HTML 파일에 있던 랜덤 로직 그대로 적용)
-      rawData.value = data.map(place => generateRandomData(place));
-      // 3. 필터 적용 및 렌더링
+      // 필터링 (HP8 + 동물병원 제외)
+      const filteredData = data.filter(place => {
+        const isRealHospital = place.category_group_code === 'HP8';
+        const isNotAnimal = !place.place_name.includes('동물') && !place.category_name.includes('동물');
+        return isRealHospital && isNotAnimal;
+      });
+
+      if (filteredData.length === 0) {
+        alert('조건에 맞는 병원이 없습니다.');
+        return;
+      }
+
+      rawData.value = filteredData.map(place => generateRandomData(place));
       applyFilters(); 
+    } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
+      alert('검색 결과가 없습니다.');
     }
   }, {
     location: map.value.getCenter(),
-    radius: currentRadius.value
+    radius: currentRadius.value,
+    sort: window.kakao.maps.services.SortBy.DISTANCE
   });
 };
 
 const reSearch = () => searchPlaces('병원');
 
-// === 필터 및 정렬 로직 ===
+// === 필터 및 정렬 ===
 const applyFilters = () => {
   let result = [...rawData.value];
 
-  // (1) 진료과 필터
   if (currentDept.value !== 'all') {
     result = result.filter(h => h.dept.includes(currentDept.value));
   }
-  // (2) 영업중 필터
   if (filterOpenOnly.value) {
     result = result.filter(h => h.isOpen);
   }
-  // (3) 정렬
+
   if (sortMode.value === 'distance') {
     result.sort((a,b) => a.distanceValue - b.distanceValue);
   } else if (sortMode.value === 'wait') {
@@ -197,18 +242,16 @@ const applyFilters = () => {
     result.sort((a,b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9));
   }
 
-  // (4) 마커 새로고침 및 부모에게 전달
   displayMarkers(result);
   emit('update-hospitals', result);
 };
 
-// 필터 변경 헬퍼
+// 헬퍼 함수들
 const setRadius = (r) => { currentRadius.value = r; searchPlaces('병원'); };
 const setDept = (d) => { currentDept.value = d; applyFilters(); };
 
 // === 마커 표시 ===
 const displayMarkers = (places) => {
-  // 기존 마커 제거
   overlayList.value.forEach(o => o.setMap(null));
   overlayList.value = [];
 
@@ -224,15 +267,15 @@ const displayMarkers = (places) => {
         <span>${place.waitTime}분</span>
       </div>
       <div class="custom-div-icon">
-        <div class="marker-pin"></div>
-        <i class="fa-solid fa-hospital marker-icon" style="color:${color}"></i>
+      <div class="marker-pin" style="background:${color}"></div>
+      <i class="fa-solid fa-hospital marker-icon" style="color:#fff"></i>
       </div>
     `;
     
-    // 마커 클릭 시 상세 카드 열기
+
     content.onclick = () => {
-      selectedCard.value = place;
-      map.value.panTo(position);
+       selectedCard.value = place; // 카드 데이터 채우기
+       map.value.panTo(position);  // 지도 이동
     };
 
     const overlay = new window.kakao.maps.CustomOverlay({
@@ -242,7 +285,7 @@ const displayMarkers = (places) => {
   });
 };
 
-// === 랜덤 데이터 생성 (HTML 로직 복원) ===
+// 랜덤 데이터 생성
 const generateRandomData = (place) => {
   const states = ["원활", "보통", "혼잡"];
   const randomState = states[Math.floor(Math.random() * states.length)];
@@ -253,9 +296,7 @@ const generateRandomData = (place) => {
     detailDept = "내과, 정형외과, 소아청소년과";
   }
 
-  const waitCount = (randomState === "원활") 
-    ? Math.floor(Math.random() * 5) + 1 
-    : Math.floor(Math.random() * 18) + 6;
+  const waitCount = (randomState === "원활") ? Math.floor(Math.random() * 5) + 1 : Math.floor(Math.random() * 18) + 6;
   const waitTime = waitCount * (randomState === "혼잡" ? 5 : 4);
 
   return {
@@ -276,7 +317,6 @@ const generateRandomData = (place) => {
   };
 };
 
-// === 유틸리티 ===
 const getColorByStatus = (status) => {
   if (status === "원활") return "#10b981";
   if (status === "보통") return "#f59e0b";
@@ -289,51 +329,34 @@ const panToMyLocation = () => {
   navigator.geolocation.getCurrentPosition((pos) => {
     const latlng = new window.kakao.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
     map.value.panTo(latlng);
-    
-    // 내 위치 마커 표시
-    if(!myLocationOverlay.value) {
-      const content = document.createElement('div');
-      content.className = 'my-location-pulse';
-      myLocationOverlay.value = new window.kakao.maps.CustomOverlay({
-        map: map.value, position: latlng, content, yAnchor: 1
-      });
-    } else {
-      myLocationOverlay.value.setPosition(latlng);
-    }
     searchPlaces('병원');
   });
 };
 
+// 상세 카드에서 쓰는 기능들
 const callHospital = (phone) => alert(`전화 연결: ${phone}`);
 const openKakaoWay = (h) => window.open(`https://map.kakao.com/link/to/${h.name},${h.lat},${h.lng}`);
-const moveTo = (lat, lng) => {
-  if(map.value) map.value.panTo(new window.kakao.maps.LatLng(lat, lng));
-};
 
-// 부모에게 카드 열기 기능 제공 (리스트에서 클릭 시)
 const openCard = (hospital) => {
   selectedCard.value = hospital;
-  moveTo(hospital.lat, hospital.lng);
+  if(map.value) map.value.panTo(new window.kakao.maps.LatLng(hospital.lat, hospital.lng));
+};
+
+const moveTo = (lat, lng) => {
+  if(map.value) map.value.panTo(new window.kakao.maps.LatLng(lat, lng));
 };
 
 defineExpose({ searchPlaces, moveTo, openCard });
 </script>
 
 <style scoped>
-/* Glassmorphism & UI Styles from HTML */
 .glass { background: rgba(255,255,255,.90); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,.65); }
 .glass-strong { background: rgba(255,255,255,.98); backdrop-filter: blur(16px); border: 1px solid rgba(15,23,42,.08); }
-
-/* Seg Button */
 .seg { display:flex; gap:6px; background: rgba(15,23,42,.04); padding: 4px; border-radius: 999px; }
 .seg button { padding: 6px 10px; border-radius: 999px; font-size: 11px; font-weight: 800; color: rgba(15,23,42,.6); transition: all .2s; }
 .seg button.active { background: #fff; color: #0f172a; box-shadow: 0 2px 8px rgba(0,0,0,.05); }
-
-/* Chips */
 .chip { border: 1px solid rgba(15,23,42,.08); background: #fff; padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 800; color: rgba(15,23,42,.6); transition: all .2s; }
 .chip.active { background: #e0e7ff; border-color: #6366f1; color: #4338ca; }
-
-/* Sheet Animation */
 .sheet { transform: translateY(110%); opacity: 0; transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); }
 .sheet.open { transform: translateY(0); opacity: 1; }
 </style>

@@ -1,0 +1,1 @@
+<template>문진표</template>
