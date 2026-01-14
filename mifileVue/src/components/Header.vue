@@ -1,10 +1,7 @@
 <template>
   <header class="h-16 bg-white/90 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-6 z-10 shrink-0">
     
-    <button 
-      class="md:hidden text-slate-500 mr-4"
-      @click="$emit('toggle-sidebar')"
-    >
+    <button class="md:hidden text-slate-500 mr-4" @click="$emit('toggle-sidebar')">
       <i class="fa-solid fa-bars text-xl"></i>
     </button>
 
@@ -47,26 +44,16 @@
 <script setup>
 import { ref } from 'vue';
 
-// 부모 컴포넌트와 통신하기 위한 이벤트 정의
+// 부모에게 신호를 보내기 위한 설정 (검색했다! 메뉴눌렀다!)
 const emit = defineEmits(['search', 'toggle-sidebar']);
-
 const searchKeyword = ref('');
 
-// 검색 실행 함수
+// 검색 기능
 const handleSearch = () => {
-  // 빈 값 체크가 필요하다면 여기서 수행 후 emit
   if (!searchKeyword.value.trim()) {
     alert('키워드를 입력해주세요!');
     return;
   }
-  
-  // 부모 컴포넌트로 입력된 키워드 전달
   emit('search', searchKeyword.value);
 };
 </script>
-
-<style scoped>
-/* Tailwind CSS를 사용하므로 별도의 CSS가 거의 필요 없지만,
-  필요한 경우 여기에 작성합니다. 
-*/
-</style>
