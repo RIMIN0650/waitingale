@@ -656,7 +656,10 @@ function closeHospitalCard() {
             </div>
             <div>
               <p class="text-sm font-extrabold text-slate-900">게스트</p>
-              <a href="login.html" class="text-xs text-indigo-600 hover:underline">로그인하기</a>
+              <RouterLink to="/login" class="text-xs text-indigo-600 hover:underline">
+                로그인하기
+              </RouterLink>
+
             </div>
           </div>
         </div>
