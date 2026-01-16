@@ -78,6 +78,31 @@
             {{ time.label }}
           </button>
         </div>
+
+
+
+        <!-- 즉시 대기 등록 -->
+        <div class="mt-4 p-4 bg-gradient-to-r from-orange-50 to-amber-50 rounded-2xl border border-orange-200">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 bg-orange-500 rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-bolt text-white"></i>
+              </div>
+              <div>
+                <p class="font-bold text-slate-800">즉시 대기 등록</p>
+                <p class="text-xs text-slate-500">가장 빠른 시간에 진료받기</p>
+              </div>
+            </div>
+            <button
+              @click="registerWaitlist"
+              class="px-4 py-2 bg-orange-500 text-white text-sm font-bold rounded-xl hover:bg-orange-600 transition"
+            >
+              등록하기
+            </button>
+          </div>
+          </div>
+
+
       </section>
 
       <!-- 의료진 선택 -->
