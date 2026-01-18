@@ -1,7 +1,4 @@
 <script>
-// ==========================================================
-// 1) 탭 전환 + 즐겨찾기
-// ==========================================================
 const FAVORITE_KEY = 'mediq_favorites'
 
 function getFavorites() {
@@ -29,7 +26,6 @@ function toggleFavorite(hospital) {
 
   setFavorites(favorites)
 
-  // ✅ 필터/정렬 상태 유지한 채로 전체 갱신
   applyFiltersAndRender()
   renderFavoriteList()
 }
@@ -89,9 +85,7 @@ function switchTab(tabName) {
   }
 }
 
-// ==========================================================
-// 2) Kakao Map + State
-// ==========================================================
+
 let map
 let myLocationOverlay
 let overlayList = []
@@ -115,7 +109,7 @@ function getColorByStatus(status) {
 window.onload = function () {
   ps = new kakao.maps.services.Places()
 
-  // ✅ 즐겨찾기 먼저 렌더
+  // 즐겨찾기 먼저 렌더
   renderFavoriteList()
 
   // 초기 반경 UI
@@ -173,9 +167,7 @@ function setDept(dept) {
   applyFiltersAndRender()
 }
 
-// ==========================================================
-// 3) 증상 -> 진료과
-// ==========================================================
+
 function getDepartmentBySymptom(inputText) {
   const symptomDB = [
     { keywords: ['배', '복통', '설사', '구토', '체했', '속쓰림'], dept: '내과' },
@@ -195,9 +187,6 @@ function getDepartmentBySymptom(inputText) {
   return inputText
 }
 
-// ==========================================================
-// 4) Loading / Search
-// ==========================================================
 function renderLoadingSkeleton() {
   const listContainer = document.getElementById('sidebar-hospital-list')
   if (!listContainer) return
@@ -265,14 +254,13 @@ function placesSearchCB(data, status, pagination) {
 
     const enrichedData = data.map((place) => generateRandomHospitalData(place))
 
-    // ✅ 필터/정렬용 원본 저장
     latestRawData = enrichedData
     latestFilteredData = enrichedData
 
-    // ✅ 즐겨찾기 토글에서 쓸 수도 있으니 유지
+    // 즐겨찾기 토글에서 쓸 수도 있으니 유지
     window.currentHospitalData = enrichedData
 
-    // ✅ 렌더는 여기 한 곳으로 통일
+    // 렌더는 여기 한 곳으로 통일
     applyFiltersAndRender()
     renderFavoriteList()
   }
@@ -317,9 +305,6 @@ function generateRandomHospitalData(place) {
   }
 }
 
-// ==========================================================
-// 5) Filter / Sort / Render
-// ==========================================================
 function applyFiltersAndRender() {
   const openOnly = document.getElementById('toggle-open-only')?.checked
   const sortMode = document.getElementById('sort-mode')?.value
@@ -352,9 +337,6 @@ function applyFiltersAndRender() {
   if (rc) rc.textContent = filtered.length ? `${filtered.length}개 결과` : `결과 없음`
 }
 
-// ==========================================================
-// 6) Markers
-// ==========================================================
 function displayMarkers(data) {
   data.forEach((h) => {
     const position = new kakao.maps.LatLng(h.lat, h.lng)
@@ -419,9 +401,6 @@ function panToMyLocation() {
   })
 }
 
-// ==========================================================
-// 7) Sidebar List
-// ==========================================================
 function openKakaoWay(name, lat, lng) {
   const url = `https://map.kakao.com/link/to/${encodeURIComponent(name)},${lat},${lng}`
   window.open(url, '_blank')
@@ -429,7 +408,6 @@ function openKakaoWay(name, lat, lng) {
 
 function callHospital(phone) {
   alert(`전화 연결: ${phone}\n(웹에서는 tel: 링크로 연결 가능)`)
-  // window.location.href = `tel:${phone}`;
 }
 
 function renderSideList(data) {
@@ -462,7 +440,7 @@ function renderSideList(data) {
     return
   }
 
-  // 결과 있음: ✅ 카드 생성 1번만
+  // 결과 있음: 카드 생성 1번만
   data.forEach((h) => {
     const color = getColorByStatus(h.status)
 
@@ -485,7 +463,7 @@ function renderSideList(data) {
       'bg-white p-4 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition cursor-pointer'
     item.onclick = () => showHospitalCard(h)
 
-    // ✅ JSON stringify를 안전하게 attribute에 넣기 위해 dataset 사용
+    // JSON stringify를 안전하게 attribute에 넣기 위해 dataset 사용
     const favData = encodeURIComponent(JSON.stringify(h))
 
     item.innerHTML = `
@@ -540,9 +518,6 @@ function renderSideList(data) {
   })
 }
 
-// ==========================================================
-// 8) Card / Sheet
-// ==========================================================
 function showHospitalCard(data) {
   const sheet = document.getElementById('hospital-sheet')
   if (!sheet) return
@@ -581,10 +556,8 @@ function closeHospitalCard() {
 </script>
 
 <template>
-  <!-- ✅ Vue에서는 body 쓰지 말고 div로 -->
   <div class="h-full overflow-hidden">
     <div class="flex h-full">
-      <!-- Left Nav -->
       <div class="hidden md:flex w-64 flex-col bg-white border-r border-slate-200 z-20">
         <div class="h-16 flex items-center px-6 border-b border-slate-100">
           <a href="#" class="flex items-center gap-2">
@@ -665,9 +638,7 @@ function closeHospitalCard() {
         </div>
       </div>
 
-      <!-- Main -->
       <div class="flex-1 flex flex-col h-full relative">
-        <!-- Top Header -->
         <header
           class="h-16 bg-white/90 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-6 z-10 shrink-0"
         >
@@ -713,13 +684,10 @@ function closeHospitalCard() {
         </header>
 
         <main class="flex-1 overflow-hidden relative bg-slate-50">
-          <!-- ====================== HOSPITAL VIEW ====================== -->
           <div id="view-hospital" class="absolute inset-0 flex flex-col md:flex-row">
-            <!-- Map Panel -->
             <div class="relative w-full h-[50%] md:h-full md:flex-1 bg-slate-200 z-0">
               <div id="map" class="w-full h-full"></div>
 
-              <!-- My location -->
               <button
                 onclick="panToMyLocation()"
                 class="absolute top-4 right-4 z-[60] w-11 h-11 bg-white rounded-full shadow-lg flex items-center justify-center text-slate-700 hover:text-indigo-700 hover:bg-indigo-50 transition border border-slate-100"
@@ -728,7 +696,6 @@ function closeHospitalCard() {
                 <i class="fa-solid fa-location-crosshairs text-lg"></i>
               </button>
 
-              <!-- Premium Control Panel -->
               <div class="absolute top-4 left-1/2 -translate-x-1/2 z-[59] w-[92%] md:w-[620px]">
                 <div class="glass rounded-[28px] p-3">
                   <div class="flex items-center justify-between gap-2">
@@ -803,7 +770,6 @@ function closeHospitalCard() {
                 </div>
               </div>
 
-              <!-- Bottom Sheet -->
               <div
                 id="hospital-sheet"
                 class="sheet absolute left-0 right-0 bottom-0 md:left-auto md:right-6 md:bottom-6 md:w-96 z-[80]"
@@ -892,7 +858,6 @@ function closeHospitalCard() {
               </div>
             </div>
 
-            <!-- Sidebar -->
             <div
               id="sidebar"
               class="w-full h-[50%] md:h-full md:w-[440px] bg-white md:border-l border-slate-200 flex flex-col shadow-xl z-10"
@@ -918,7 +883,6 @@ function closeHospitalCard() {
                 </div>
               </div>
 
-              <!-- 즐겨찾기 -->
               <div id="favorite-section" class="p-4 border-b border-slate-100 bg-white">
                 <h3 class="text-sm font-bold text-slate-700 mb-2 flex items-center gap-1">
                   <i class="fa-solid fa-heart text-rose-500"></i> 즐겨찾기
@@ -940,7 +904,6 @@ function closeHospitalCard() {
             </div>
           </div>
 
-          <!-- ====================== PHARMACY VIEW ====================== -->
           <div id="view-pharmacy" class="hidden absolute inset-0 overflow-y-auto p-6 md:p-10">
             <div class="max-w-4xl mx-auto">
               <div class="flex items-center justify-between mb-8">
@@ -1012,7 +975,6 @@ function closeHospitalCard() {
             </div>
           </div>
 
-          <!-- ====================== RESERVATION VIEW ====================== -->
           <div
             id="view-reservation"
             class="hidden absolute inset-0 overflow-y-auto p-6 md:p-10 bg-slate-50"

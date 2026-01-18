@@ -78,16 +78,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
-
-// 부모에게 "메뉴 바꼈다"고 알리기 위함
+defineProps(['currentTab']); 
 const emit = defineEmits(['change-tab']);
 
-// 현재 선택된 탭 상태
-const currentTab = ref('hospital');
-
 const changeTab = (tabName) => {
-  currentTab.value = tabName;
   emit('change-tab', tabName); // 부모에게 알림
 };
 </script>
