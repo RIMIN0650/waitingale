@@ -1,32 +1,32 @@
 <script setup>
-  import { ref } from 'vue';
-import LeftSideBar from './components/LeftSideBar.vue';
-import Header from './components/Header.vue';
-import KakaoMap from './components/KakaoMap.vue';
-import RightSideBar from './components/RightSideBar.vue';
+  import { RouterView } from 'vue-router';
+// import LeftSideBar from './components/LeftSideBar.vue';
+// import Header from './components/Header.vue';
+// import KakaoMap from './components/KakaoMap.vue';
+// import RightSideBar from './components/RightSideBar.vue';
 
-const currentTab = ref('hospital');
-const hospitals = ref([]); // 검색된 병원 목록 데이터
-const mapRef = ref(null);  // 자식 컴포넌트(지도)를 조종하기 위한 변수
+// const currentTab = ref('hospital');
+// const hospitals = ref([]); // 검색된 병원 목록 데이터
+// const mapRef = ref(null);  // 자식 컴포넌트(지도)를 조종하기 위한 변수
 
-// 1. 헤더에서 검색어가 오면 -> 지도의 검색 함수 실행
-const handleSearch = (keyword) => {
-  if(mapRef.value) {
-    mapRef.value.searchPlaces(keyword);
-  }
-};
+// // 1. 헤더에서 검색어가 오면 -> 지도의 검색 함수 실행
+// const handleSearch = (keyword) => {
+//   if(mapRef.value) {
+//     mapRef.value.searchPlaces(keyword);
+//   }
+// };
 
-// 2. 지도에서 데이터가 오면 -> 리스트 업데이트
-const updateList = (data) => {
-  hospitals.value = data;
-};
+// // 2. 지도에서 데이터가 오면 -> 리스트 업데이트
+// const updateList = (data) => {
+//   hospitals.value = data;
+// };
 
-// 3. 리스트 클릭 시 -> 지도 이동 (구현 예정)
-const focusHospital = (hospital) => {
-  if(mapRef.value) {
-    mapRef.value.openCard(hospital);
-  }
-};
+// // 3. 리스트 클릭 시 -> 지도 이동 (구현 예정)
+// const focusHospital = (hospital) => {
+//   if(mapRef.value) {
+//     mapRef.value.openCard(hospital);
+//   }
+// };
 </script>
 
 <template>

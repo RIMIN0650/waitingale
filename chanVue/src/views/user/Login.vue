@@ -1,4 +1,6 @@
 <script setup>
+import { Rollup } from 'vite';
+
 
 </script>
 
@@ -29,9 +31,9 @@
         <div class="flex justify-center gap-4 mt-8 text-xs font-bold">
                 <RouterLink to="/signup" class="text-slate-400 hover:text-slate-600">회원가입</RouterLink>
                 <span class="text-slate-200">|</span>
-                <a href="/user/UserFindId" class="text-slate-400 hover:text-slate-600">아이디 찾기</a>
+                <RouterLink to="/user/UserFindId" class="text-slate-400 hover:text-slate-600">아이디 찾기</RouterLink>
                 <span class="text-slate-200">|</span>
-                <a href="pw_find.html" class="text-slate-400 hover:text-slate-600">비밀번호 찾기</a>
+                <RouterLink to="pw_find.html" class="text-slate-400 hover:text-slate-600">비밀번호 찾기</RouterLink>
         </div>
     </div>
     </div>

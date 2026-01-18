@@ -1,4 +1,4 @@
-<!-- <script setup>
+<script setup>
 import { ref, onMounted } from 'vue';
 
 defineProps({ hospitals: Array });
@@ -103,4 +103,4 @@ const toggleFavorite = (h) => {
 .badge { font-size: 10px; font-weight: 800; padding: 3px 6px; border-radius: 6px; border: 1px solid transparent; }
 .btn-icon { width: 32px; height: 32px; border-radius: 12px; background: #f1f5f9; color: #64748b; font-size: 11px; display: flex; align-items: center; justify-content: center; transition: all .2s; }
 .btn-icon:hover { background: #e2e8f0; }
-</style> -->
+</style>

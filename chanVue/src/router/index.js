@@ -1,6 +1,8 @@
 
 import { createRouter, createWebHistory } from 'vue-router'
 
+
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -10,7 +12,7 @@ const router = createRouter({
     { path : '/header', component: () => import ('@/components/Header.vue')},
     { path : '/footer', component: () => import ('@/components/Footer.vue')},
     { path : '/leftsidebar', component: () => import ('@/components/LeftSideBar.vue')},
-    { path : '/map', component: () => import ('@/views/map/Map.vue')},
+    { path : '/map', component: () => import ('@/components/KakaoMap.vue')},
   ],
 })
 
