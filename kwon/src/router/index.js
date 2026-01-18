@@ -7,6 +7,7 @@ import HomeView from '@/views/user/HomeView.vue'
 import Index from '@/views/Index.vue'
 import Reservation from '@/views/user/Reservation.vue'
 import PreCheck from '@/views/user/PreCheck.vue'
+import Waiting from '@/views/user/Waiting.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -18,6 +19,7 @@ const router = createRouter({
     { path: '/index', component: Index },
     { path: '/reservation', component: Reservation },
     { path: '/precheck', component: PreCheck },
+    { path: '/waiting', component: Waiting },
 
 
   ],
