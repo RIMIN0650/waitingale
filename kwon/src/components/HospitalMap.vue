@@ -16,7 +16,6 @@
               {{ r / 1000 }}km
             </button>
           </div>
-          
           <div class="flex items-center gap-2 shrink-0">
             <button @click="reSearch" class="px-4 py-2 rounded-2xl bg-white border border-slate-200 shadow-sm text-xs font-black text-slate-900 hover:bg-slate-50">
               이 주변 재검색
@@ -57,7 +56,7 @@
       <i class="fa-solid fa-location-crosshairs text-xl"></i>
     </button>
 
-    <div class="sheet absolute left-0 right-0 bottom-0 md:left-auto md:right-6 md:bottom-6 md:w-96 z-[60]"
+    <div class="sheet absolute left-0 right-0 bottom-0 md:left-auto md:right-6 md:bottom-6 md:w-[450px] z-[60]"
          :class="{ open: selectedCard }">
       <div class="glass-strong md:rounded-[28px] rounded-t-[28px] p-5 md:p-6 relative shadow-2xl">
         
@@ -68,13 +67,13 @@
         </button>
 
         <div v-if="selectedCard" class="fade-in">
-          <div class="flex justify-between items-start mb-4 pr-8">
+          <div class="flex gap-1 items-start mb-4 pr-8">
             <div class="min-w-0 flex-1">
               <p class="text-[10px] font-black uppercase tracking-wider mb-1" 
                  :style="{ color: getColorByStatus(selectedCard.status) }">
                 {{ selectedCard.status }}
               </p>
-              <div class="flex items-center justify-between gap-2 mt-1 mb-1">
+              <div class="flex items-center gap-2 mt-1 mb-1">
                 <h4 class="text-xl font-black text-slate-900 leading-tight truncate">
                   {{ selectedCard.name }}
                 </h4>
@@ -87,7 +86,6 @@
                   <span class="text-xs font-bold">찜</span>
                 </button>
               </div>
-
               <p class="text-xs text-slate-500 mt-1">
                 <span class="text-indigo-600 font-bold">{{ selectedCard.dept.split(',')[0] }}</span> | {{ selectedCard.distance }}
               </p>
@@ -97,7 +95,6 @@
               <p class="text-xl font-black text-slate-900">{{ selectedCard.waitTime }}<span class="text-xs">분</span></p>
             </div>
           </div>
-
           <div class="grid grid-cols-3 gap-2 mb-4">
             <div class="bg-slate-50 px-3 py-2 rounded-2xl flex items-center gap-2 border border-slate-100">
               <i class="fa-solid fa-users text-slate-400 text-xs"></i>
@@ -436,7 +433,7 @@ const panToMyLocation = () => {
 // 상세 카드에서 쓰는 기능들
 const callHospital = (phone) => alert(`전화 연결: ${phone}`);
 const openKakaoWay = (h) => window.open(`https://map.kakao.com/link/to/${h.name},${h.lat},${h.lng}`);
-const goToIntake = () => router.push('/intake');
+const goToIntake = () => router.push('/precheck');
 
 const openCard = (hospital) => {
   selectedCard.value = hospital;

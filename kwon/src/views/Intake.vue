@@ -3,7 +3,7 @@
 </script>
 
 <template>
-  <RouterView></RouterView>
+    문진표
 </template>
 
 <style scoped>
