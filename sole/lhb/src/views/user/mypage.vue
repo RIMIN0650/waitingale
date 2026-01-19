@@ -423,7 +423,7 @@ onUnmounted(() => {
                     v-model="newMemberName" 
                     @keyup.enter="saveFamilyMember"
                     type="text" 
-                    placeholder="예: 홍길동" 
+                    placeholder="예: 이성계" 
                     class="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition font-bold text-slate-800"
                     autoFocus
                 >
