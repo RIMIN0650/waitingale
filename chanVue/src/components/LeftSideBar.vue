@@ -59,10 +59,10 @@
 
       <div class="pt-6 mt-6 border-t border-slate-100">
         <p class="px-2 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Account</p>
-        <button class="w-full group flex items-center px-3 py-2.5 text-sm font-semibold rounded-2xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
+        <RouterLink to="/mypage" class="w-full group flex items-center px-3 py-2.5 text-sm font-semibold rounded-2xl text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-all">
           <i class="fa-solid fa-user-gear w-6 text-center text-lg mr-2"></i>
           마이페이지
-        </button>
+        </RouterLink>
       </div>
     </nav>
 
@@ -79,7 +79,6 @@
         </div>
       </div>
     </div>
-
 </div>
 </template>
 
